@@ -1,6 +1,6 @@
 # student
 
-
+Tady bude Váš zápočtový program
 
 ## Getting started
 
