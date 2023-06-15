@@ -29,9 +29,8 @@ class Positions {
             return;
         }
 
-        // bool mutedCond = (remainingStrings > remainingNotes && (s == 0 || stringPos[s - 1] == Position.mutedString)) || (remainingNotes == 0);
-        bool mutedCond = (remainingStrings > remainingNotes && (s == 0 || stringPos[s - 1] == Position.mutedString));
-        // bool mutedCond = true;
+        bool mutedCond = (s == 0) || (stringPos[s - 1] == Position.mutedString) || (remainingNotes == 0);
+        bool nonMutedCond = (s == 0) || (stringPos[s - 1] != Position.mutedString) || (stringPos.Sum() == -s);
 
         if (mutedCond) {
             stringPos[s] = Position.mutedString;
@@ -39,22 +38,24 @@ class Positions {
             FillNextString(barre, stringPos, notes, s + 1, remainingNotes, remainingFingers);
         }
 
-        for (int i = 0; i < chord.notes.Length; i++) {
-            stringPos[s] = Music.Modulo(chord.notes[i] - instrument.strings[s] - barre) + barre;
+        if (nonMutedCond) {
+            for (int i = 0; i < chord.notes.Length; i++) {
+                stringPos[s] = Music.Modulo(chord.notes[i] - instrument.strings[s] - barre) + barre;
 
-            if (stringPos[s] > instrument.frets) {
-                continue;
-            }
+                if (stringPos[s] > instrument.frets) {
+                    continue;
+                }
 
-            notes[s] = chord.notes[i];
-            int r = (Array.IndexOf(notes, chord.notes[i]) == s) ? 1 : 0;
-            int f = (stringPos[s] != barre) ? 1 : 0;
-            FillNextString(barre, stringPos, notes, s + 1, remainingNotes - r, remainingFingers - f);
+                notes[s] = chord.notes[i];
+                int r = (Array.IndexOf(notes, chord.notes[i]) == s) ? 1 : 0;
+                int f = (stringPos[s] != barre) ? 1 : 0;
+                FillNextString(barre, stringPos, notes, s + 1, remainingNotes - r, remainingFingers - f);
 
-            // check other octaves
-            while (stringPos[s] + Music.NumberOfNotes <= instrument.frets) {
-                stringPos[s] = stringPos[s] + Music.NumberOfNotes;
-                FillNextString(barre, stringPos, notes, s + 1, remainingNotes - r, remainingFingers - 1);
+                // check other octaves
+                while (stringPos[s] + Music.NumberOfNotes <= instrument.frets) {
+                    stringPos[s] = stringPos[s] + Music.NumberOfNotes;
+                    FillNextString(barre, stringPos, notes, s + 1, remainingNotes - r, remainingFingers - 1);
+                }
             }
         }
     }
@@ -85,9 +86,11 @@ class Position {
     int getScore() {
         int maxPos = -1;
         int minPos = instrument.frets;
-        int numberOfMuted = 0;
+        int minTone = (barre != 0) ? barre : instrument.frets;
         int lowestTone = Music.HighestNote;
+        int numberOfMuted = 0;
         int hasBarre = (barre != 0) ? 1 : 0;
+        int barreNotes = 0;
         int numberOfFingers = hasBarre;
         int firstString = instrument.strings.Length;
         int lastString = -1;
@@ -97,6 +100,8 @@ class Position {
 
             if (pos == mutedString) {
                 numberOfMuted++;
+            } else if (pos < minTone) {
+                minTone = pos;
             }
 
             if (pos != emptyString && pos != mutedString) {
@@ -107,13 +112,14 @@ class Position {
                     if (firstString > i) {
                         firstString = i;
                     }
+                } else {
+                    barreNotes++;
                 }
 
                 if (pos < minPos) {
                     minPos = pos;
                 }
             }
-
 
             if (pos > maxPos) {
                 maxPos = pos;
@@ -137,19 +143,27 @@ class Position {
         int noRoot = (Music.Modulo(lowestTone) != chord.root) ? 1 : 0;
         int hasMuted = (numberOfMuted > 0) ? 1 : 0;
         int hasTooManyMuted = (numberOfMuted >= instrument.strings.Length / 2) ? 1 : 0;
-        hasMuted *= (instrument.strings.Length > 4) ? 1 : 2;
+        int mutedOnBothSides = (stringPos[0] == mutedString && stringPos[stringPos.Length - 1] == mutedString) ? 1 : 0;
+        int littleBarreNotes = (barreNotes < 2) ? 1 : 0;
+
+        int rootWeight = (instrument.strings.Length > 4) ? 2 : 1;
+        int mutedWeight = (instrument.strings.Length > 4) ? 1 : 3;
 
         int s = 1000;
 
         s -= hasBarre * 10;
+        s -= hasBarre * littleBarreNotes * 100;
+        s -= noRoot * rootWeight * 25;
+
+        s -= minTone * 10;
+        s -= (maxPos - minTone) * 10;
         s -= (maxPos - minPos) * 10;
-        s -= maxPos * 20;
-        s -= hasMuted * 15;
-        s -= numberOfMuted * 15;
-        s -= hasTooManyMuted * 100;
-        s -= noRoot * 31;
-        s -= numberOfFingers * 4;
         s -= (lastString - firstString) * 5;
+        s -= numberOfFingers * 7;
+
+        s -= hasMuted * mutedWeight * 15;
+        s -= numberOfMuted * mutedWeight * 15;
+        s -= (hasTooManyMuted + mutedOnBothSides) * 100;
 
         return s;
     }

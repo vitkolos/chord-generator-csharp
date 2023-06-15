@@ -4,19 +4,31 @@ class Program {
     static void Main(string[] args) {
         var parser = new Parser("chords.txt");
         var instrument = new Instrument(parser);
-        Console.Write("Zadejte akord: ");
-        string? input = Console.ReadLine();
+        string? input;
 
-        if (input != null) {
+        while (true) {
+            Console.Write("Zadejte akord: ");
+            input = Console.ReadLine();
+
+            if (input == "" || input == null) {
+                return;
+            }
+
             var chord = new Chord(input, parser);
             var positions = new Positions(instrument, chord);
 
             if (positions.list != null) {
                 positions.list.Sort(Position.PositionComparer);
+                var i = positions.list.Count + 1;
 
                 foreach (var position in positions.list) {
-                    position.PrintDiagram();
+                    if (--i <= 20) {
+                        Console.Write(i + ". ");
+                        position.PrintDiagram();
+                    }
                 }
+
+                Console.WriteLine($"nalezeno {positions.list.Count} variant akordu {input}");
             }
         }
     }
