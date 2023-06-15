@@ -66,6 +66,8 @@ class Position {
     public const int mutedString = -1;
     int barre = 0;
     int score = 0;
+    int minPos = 0;
+    int maxPos = 0;
     Instrument instrument;
     Chord chord;
     int[] stringPos;
@@ -81,11 +83,63 @@ class Position {
 
     public void PrintDiagram() {
         Console.WriteLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);
+        int first = 1;
+        int last = 0;
+
+        if (maxPos <= 5) {
+            last = Math.Max(4, maxPos);
+        } else {
+            first = minPos;
+            last = Math.Max(minPos + 3, maxPos);
+        }
+
+        for (int i = 0; i < stringPos.Length; i++) {
+            Console.Write(" ");
+
+            switch (stringPos[i]) {
+                case -1:
+                    Console.Write("x");
+                    break;
+                case 0:
+                    Console.Write("o");
+                    break;
+                default:
+                    Console.Write(" ");
+                    break;
+            }
+        }
+
+        Console.WriteLine();
+        Console.Write(first == 1 ? " " : first);
+
+        for (int i = first; i <= last; i++) {
+            if (i != first) {
+                Console.Write(" ");
+            }
+
+            if (barre == i) {
+                Console.Write(new String('⬬', stringPos.Length * 2 - 1));
+            } else {
+                for (int j = 0; j < stringPos.Length; j++) {
+                    if (j != 0) {
+                        Console.Write(" ");
+                    }
+
+                    if (stringPos[j] == i) {
+                        Console.Write("●");
+                    } else {
+                        Console.Write("|");
+                    }
+                }
+            }
+
+            Console.WriteLine();
+        }
     }
 
     int getScore() {
-        int maxPos = -1;
-        int minPos = instrument.frets;
+        maxPos = -1;
+        minPos = instrument.frets;
         int minTone = (barre != 0) ? barre : instrument.frets;
         int lowestTone = Music.HighestNote;
         int numberOfMuted = 0;

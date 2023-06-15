@@ -23,8 +23,10 @@ class Program {
 
                 foreach (var position in positions.list) {
                     if (--i <= 20) {
+                        Console.WriteLine();
                         Console.Write(i + ". ");
                         position.PrintDiagram();
+                        Console.WriteLine();
                     }
                 }
 
