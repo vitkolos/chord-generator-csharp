@@ -1,7 +1,7 @@
 ﻿using System;
 
 class Program {
-    public static bool runInWindow = false;
+    public static bool runInWindow = true;
 
     public static void ConsoleMain(string[] args) {
         var parser = new Parser("config.txt");

@@ -20,7 +20,7 @@ public partial class Form1 : Form {
     private FlowLayoutPanel outputArea;
     private Button okButton;
     private FlowLayoutPanel instrumentRadioGroup;
-    int[]? vs;
+    int[]? sharedVerticalSpace;
 
     public Form1() {
         chordLabel = new Label();
@@ -53,9 +53,7 @@ public partial class Form1 : Form {
         int buttonWidth = 100;
 
         int[] verticalSpace = { 9, 17, vp, h, vp, h, vp };
-        vs = verticalSpace;
-
-        var tabIndex = 0;
+        sharedVerticalSpace = verticalSpace;
 
         chordLabel.Text = "Zadejte akord:";
         chordLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
@@ -65,17 +63,17 @@ public partial class Form1 : Form {
 
         chordInput.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 3));
         chordInput.Size = new Size(boxWidth, verticalSpace[3]);
-        chordInput.TabIndex = tabIndex++;
+        chordInput.TabIndex = 0;
+        chordInput.KeyDown += chordInput_KeyDown;
 
         okButton.Location = new Point(leftPadding + boxWidth + hp, Program.SumTo(verticalSpace, 3));
         okButton.Size = new Size(buttonWidth, verticalSpace[5]);
-        okButton.TabIndex = tabIndex++;
+        okButton.TabIndex = 1;
         okButton.Text = "Generovat";
-        okButton.UseVisualStyleBackColor = true;
         okButton.Click += okButton_Click;
 
         instrumentRadioGroup.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 5));
-        instrumentRadioGroup.TabIndex = tabIndex++;
+        instrumentRadioGroup.TabIndex = 2;
         instrumentRadioGroup.Size = new Size(0, 0);
         instrumentRadioGroup.AutoSize = true;
         List<string> instrumentNames = parser.instruments.Keys.ToList();
@@ -83,9 +81,9 @@ public partial class Form1 : Form {
         foreach (string instrumentName in instrumentNames) {
             var rb = new RadioButton();
             rb.Text = instrumentName;
-            instrumentRadioGroup.Controls.Add(rb);
             rb.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
             rb.AutoSize = true;
+            instrumentRadioGroup.Controls.Add(rb);
 
             if (parser.defaultInstrument == instrumentName) {
                 rb.Checked = true;
@@ -122,8 +120,10 @@ public partial class Form1 : Form {
     }
 
     void RefreshResponsiveLayout() {
-        outputArea.Width = Convert.ToInt32(this.ClientSize.Width - 24);
-        outputArea.Height = Convert.ToInt32(this.ClientSize.Height - Program.SumTo(vs!, 7));
+        if (sharedVerticalSpace != null) {
+            outputArea.Width = Convert.ToInt32(this.ClientSize.Width - 24);
+            outputArea.Height = Convert.ToInt32(this.ClientSize.Height - Program.SumTo(sharedVerticalSpace, 7));
+        }
     }
 
     void radioButton_CheckedChanged(object? sender, EventArgs e) {
@@ -141,6 +141,13 @@ public partial class Form1 : Form {
 
     void okButton_Click(object? sender, EventArgs e) {
         showDiagrams();
+    }
+
+    void chordInput_KeyDown(object? sender, KeyEventArgs e) {
+        if (e.KeyCode == Keys.Enter) {
+            showDiagrams();
+            e.SuppressKeyPress = true; // removes the sound
+        }
     }
 
     void showDiagrams() {
