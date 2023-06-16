@@ -2,16 +2,25 @@
 
 class Program {
     static void Main(string[] args) {
-        var parser = new Parser("chords.txt");
-        var instrument = new Instrument(parser);
+        var parser = new Parser("config.txt");
+        Instrument instrument = parser.ParseInstrument()!;
         string? input;
 
         while (true) {
-            Console.Write("Zadejte akord: ");
+            Console.WriteLine("Podporovane nastroje: {0}", string.Join(", ", parser.instruments.Keys));
+            Console.WriteLine($"Zvoleny nastroj: {instrument.name}");
+            Console.Write("Zadejte akord nebo nastroj: ");
             input = Console.ReadLine();
 
             if (input == "" || input == null) {
                 return;
+            }
+
+            Instrument? nextInstrument = parser.ParseInstrument(input);
+
+            if (nextInstrument != null) {
+                instrument = nextInstrument;
+                continue;
             }
 
             var chord = new Chord(input, parser);

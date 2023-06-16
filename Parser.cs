@@ -1,45 +1,98 @@
 using System;
 
 class Parser {
-    Dictionary<string, int[]> chords;
+    Dictionary<string, int[]> chordSuffixes;
+    public Dictionary<string, Instrument> instruments;
+    string defaultInstrument;
 
-    public Parser(string chordsFile) {
-        chords = new Dictionary<string, int[]>();
+    public Parser(string configFile) {
+        chordSuffixes = new Dictionary<string, int[]>();
+        instruments = new Dictionary<string, Instrument>();
+        bool inInstrumentSection = true;
+        defaultInstrument = "";
 
-        using (var reader = new System.IO.StreamReader(chordsFile)) {
+        using (var reader = new System.IO.StreamReader(configFile)) {
             string? line;
 
             while ((line = reader.ReadLine()) != null) {
+                if (line == "") {
+                    inInstrumentSection = false;
+                    continue;
+                }
+
                 string[] lineParts = line.Split(',');
 
-                if (lineParts.Length == 2) {
-                    string[] chordVariants = lineParts[0].Split(' ');
-                    string[] chordNotes = lineParts[1].Split(' ');
-                    int[] notes = new int[Music.ChordSize];
-
-                    for (int i = 0; i < notes.Length; i++) {
-                        notes[i] = -1;
-                    }
-
-                    for (int i = 0; i < chordNotes.Length; i++) {
-                        switch (chordNotes[i]) {
-                            case "t":
-                                notes[i] = 10;
-                                break;
-                            case "e":
-                                notes[i] = 11;
-                                break;
-                            default:
-                                notes[i] = int.Parse(chordNotes[i]);
-                                break;
-                        }
-                    }
-
-                    foreach (var variant in chordVariants) {
-                        chords.Add(variant, notes);
+                if (lineParts.Length > 1) {
+                    if (inInstrumentSection) {
+                        ParseInstrumentFromLine(lineParts);
+                    } else {
+                        ParseChordSuffixesFromLine(lineParts);
                     }
                 }
             }
+        }
+    }
+
+    void ParseInstrumentFromLine(string[] lineParts) {
+        if (defaultInstrument == "") {
+            defaultInstrument = lineParts[0];
+        }
+
+        string input = lineParts[2];
+        // string input = "GCEA";
+        // string input = "E2 A2 D3 G3 H3 E4";
+        char[] stringNames;
+        int[] octaves;
+
+        if (input.Contains(' ')) {
+            string[] s = input.Split(' ');
+            stringNames = new char[s.Length];
+            octaves = new int[s.Length];
+
+            for (int i = 0; i < s.Length; i++) {
+                stringNames[i] = s[i][0];
+
+                if (s[i].Length == 2) {
+                    octaves[i] = s[i][1] - '0';
+                }
+            }
+        } else {
+            octaves = new int[input.Length];
+            stringNames = input.ToCharArray();
+        }
+
+        var instrument = new Instrument(this, lineParts[0], int.Parse(lineParts[1]), stringNames, octaves);
+        instruments.Add(instrument.name, instrument);
+    }
+
+    void ParseChordSuffixesFromLine(string[] lineParts) {
+        string[] chordVariants = lineParts[0].Split(' ');
+        string[] chordNotes;
+
+        if (lineParts[1].Contains(' ')) {
+            chordNotes = lineParts[1].Split(' ');
+        } else {
+            chordNotes = lineParts[1].ToCharArray().Select(c => c.ToString()).ToArray();
+        }
+
+        int[] notes = new int[chordNotes.Length];
+
+        for (int i = 0; i < chordNotes.Length; i++) {
+            switch (chordNotes[i]) {
+                case "t":
+                    notes[i] = 10;
+                    break;
+                case "e":
+                    notes[i] = 11;
+                    break;
+                default:
+                    notes[i] = int.Parse(chordNotes[i]);
+                    break;
+            }
+        }
+
+        foreach (var variant in chordVariants) {
+            chordSuffixes.Add(variant, notes);
         }
     }
 
@@ -78,9 +131,21 @@ class Parser {
         }
 
         try {
-            return chords[input];
+            return chordSuffixes[input];
         } catch (KeyNotFoundException) {
             throw new Exception("Typ akordu byl chybně zadán.");
+        }
+    }
+
+    public Instrument? ParseInstrument(string? input = null) {
+        if (input == null) {
+            input = defaultInstrument;
+        }
+
+        try {
+            return instruments[input];
+        } catch (KeyNotFoundException) {
+            return null;
         }
     }
 }

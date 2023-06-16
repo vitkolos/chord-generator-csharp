@@ -220,7 +220,7 @@ class Position {
         int mutedOnBothSides = (stringPos[0] == mutedString && stringPos[stringPos.Length - 1] == mutedString) ? 1 : 0;
         int littleBarreNotes = (barreNotes < 2) ? 1 : 0;
 
-        int rootWeight = (instrument.strings.Length > 4) ? 2 : 1;
+        int rootWeight = (instrument.strings.Length > 4) ? 3 : 1;
         int mutedWeight = (instrument.strings.Length > 4) ? 1 : 3;
 
         int s = 1000;

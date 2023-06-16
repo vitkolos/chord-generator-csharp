@@ -12,7 +12,7 @@ class Chord {
 
         string variant = input.Substring(accidental == 0 ? 1 : 2);
         int[] parsedChord = parser.ParseChord(variant);
-        notes = new int[Array.IndexOf(parsedChord, -1)];
+        notes = new int[parsedChord.Length];
 
         for (int i = 0; i < notes.Length; i++) {
             notes[i] = Music.Modulo(parsedChord[i] + root);
