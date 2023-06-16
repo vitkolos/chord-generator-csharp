@@ -1,9 +1,8 @@
 class Instrument {
     public string name;
+    public int frets;
     public int[] strings;
     public int[] realStrings;
-    public int frets = 19;
-
 
     public Instrument(Parser parser, string name, int frets, char[] stringNames, int[] octaves) {
         this.name = name;

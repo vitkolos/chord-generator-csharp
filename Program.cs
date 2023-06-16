@@ -49,11 +49,11 @@ class Program {
 class Music {
     public const int NumberOfNotes = 12;
     public const int AvailableFingers = 4;
-    public const int ChordSize = 7;
+    public const int DefaultNumberOfFrets = 20;
     public const int HighestNote = 200;
 
     public static int Modulo(int note) {
-        int barreOverflowPrevention = 5; // we suppose any instrument has less than 60 frets
+        int barreOverflowPrevention = 10; // we suppose every instrument has less than 120 frets
         return (note + Music.NumberOfNotes * barreOverflowPrevention) % Music.NumberOfNotes;
     }
 }

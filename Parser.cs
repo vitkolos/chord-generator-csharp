@@ -34,15 +34,18 @@ class Parser {
     }
 
     void ParseInstrumentFromLine(string[] lineParts) {
+        string input = lineParts[1];
+        int frets = Music.DefaultNumberOfFrets;
+        char[] stringNames;
+        int[] octaves;
+
         if (defaultInstrument == "") {
             defaultInstrument = lineParts[0];
         }
 
-        string input = lineParts[2];
-        // string input = "GCEA";
-        // string input = "E2 A2 D3 G3 H3 E4";
-        char[] stringNames;
-        int[] octaves;
+        if (lineParts.Length > 2) {
+            frets = int.Parse(lineParts[2]);
+        }
 
         if (input.Contains(' ')) {
             string[] s = input.Split(' ');
@@ -61,7 +64,7 @@ class Parser {
             stringNames = input.ToCharArray();
         }
 
-        var instrument = new Instrument(this, lineParts[0], int.Parse(lineParts[1]), stringNames, octaves);
+        var instrument = new Instrument(this, lineParts[0], frets, stringNames, octaves);
         instruments.Add(instrument.name, instrument);
     }
 

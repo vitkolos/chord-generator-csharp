@@ -1,5 +1,5 @@
-ukulele,19,GCEA
-kytara,24,E2 A2 D3 G3 H3 E4
+ukulele,GCEA,19
+kytara,E2 A2 D3 G3 H3 E4
 
 major,0 4 7
 m,0 3 7
