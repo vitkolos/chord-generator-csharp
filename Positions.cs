@@ -83,17 +83,26 @@ class Position {
 
     public void PrintDiagram() {
         Console.WriteLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);
-        int first = 1;
-        int last = 0;
+        int firstFret = 1;
+        int lastFret = 0;
+        int finger = 1;
+        int totalFingers = (barre != 0) ? 1 : 0;
+        int fingerShift = 0;
 
         if (maxPos <= 5) {
-            last = Math.Max(4, maxPos);
+            lastFret = Math.Max(4, maxPos);
         } else {
-            first = minPos;
-            last = Math.Max(minPos + 3, maxPos);
+            firstFret = minPos;
+            lastFret = Math.Max(minPos + 3, maxPos);
         }
 
+        Console.Write(" ");
+
         for (int i = 0; i < stringPos.Length; i++) {
+            if (stringPos[i] != barre && stringPos[i] != mutedString) {
+                totalFingers++;
+            }
+
             Console.Write(" ");
 
             switch (stringPos[i]) {
@@ -110,26 +119,37 @@ class Position {
         }
 
         Console.WriteLine();
-        Console.Write(first == 1 ? " " : first);
+        Console.Write(firstFret == 1 ? " " : firstFret);
 
-        for (int i = first; i <= last; i++) {
-            if (i != first) {
+        for (int i = firstFret; i <= lastFret; i++) {
+            if (i != firstFret) {
+                Console.Write("  ");
+            } else if (firstFret < 10) {
                 Console.Write(" ");
             }
 
             if (barre == i) {
-                Console.Write(new String('⬬', stringPos.Length * 2 - 1));
+                Console.Write(new String('e', stringPos.Length * 2 - 1));
+                finger++;
             } else {
+                int lastFinger = finger;
+
                 for (int j = 0; j < stringPos.Length; j++) {
                     if (j != 0) {
                         Console.Write(" ");
                     }
 
                     if (stringPos[j] == i) {
-                        Console.Write("●");
+                        // Console.Write("0");
+                        Console.Write(fingerShift + finger);
+                        finger++;
                     } else {
                         Console.Write("|");
                     }
+                }
+
+                if (i > barre && lastFinger == finger && totalFingers + fingerShift < Music.AvailableFingers - 1) {
+                    fingerShift++;
                 }
             }
 
@@ -210,7 +230,7 @@ class Position {
         s -= noRoot * rootWeight * 25;
 
         s -= minTone * 10;
-        s -= (maxPos - minTone) * 10;
+        s -= (maxPos - minTone) * 15;
         s -= (maxPos - minPos) * 10;
         s -= (lastString - firstString) * 5;
         s -= numberOfFingers * 7;

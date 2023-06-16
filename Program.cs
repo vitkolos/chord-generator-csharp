@@ -30,7 +30,8 @@ class Program {
                     }
                 }
 
-                Console.WriteLine($"nalezeno {positions.list.Count} variant akordu {input}");
+                // Console.WriteLine($"nalezeno {positions.list.Count} variant akordu {input}");
+                Console.WriteLine("akord " + input);
             }
         }
     }
