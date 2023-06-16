@@ -1,7 +1,9 @@
 ﻿using System;
 
 class Program {
-    static void Main(string[] args) {
+    public static bool runInWindow = false;
+
+    public static void ConsoleMain(string[] args) {
         var parser = new Parser("config.txt");
         Instrument instrument = parser.ParseInstrument()!;
         string? input;
@@ -14,6 +16,9 @@ class Program {
 
             if (input == "" || input == null) {
                 return;
+            } else if (input == "run tests") {
+                Tests.Run();
+                continue;
             }
 
             Instrument? nextInstrument = parser.ParseInstrument(input);
@@ -34,7 +39,7 @@ class Program {
                     if (--i <= 20) {
                         Console.WriteLine();
                         Console.Write(i + ". ");
-                        position.PrintDiagram();
+                        Console.Write(position.GetDiagram());
                         Console.WriteLine();
                     }
                 }
@@ -43,6 +48,16 @@ class Program {
                 Console.WriteLine("akord " + input);
             }
         }
+    }
+
+    public static int SumTo(int[] array, int to) {
+        int sum = 0;
+
+        for (int i = 0; i < to; i++) {
+            sum += array[i];
+        }
+
+        return sum;
     }
 }
 

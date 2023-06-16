@@ -30,7 +30,7 @@ class Positions {
         }
 
         bool mutedCond = (s == 0) || (stringPos[s - 1] == Position.mutedString) || (remainingNotes == 0); // this should have no influence on final number of diagrams
-        bool nonMutedCond = (s == 0) || (stringPos[s - 1] != Position.mutedString) || (SumTo(stringPos, s) == -s);
+        bool nonMutedCond = (s == 0) || (stringPos[s - 1] != Position.mutedString) || (Program.SumTo(stringPos, s) == -s);
 
         if (mutedCond) {
             stringPos[s] = Position.mutedString;
@@ -59,16 +59,6 @@ class Positions {
             }
         }
     }
-
-    int SumTo(int[] array, int to) {
-        int sum = 0;
-
-        for (int i = 0; i < to; i++) {
-            sum += array[i];
-        }
-
-        return sum;
-    }
 }
 
 class Position {
@@ -91,8 +81,10 @@ class Position {
         this.score = this.getScore();
     }
 
-    public void PrintDiagram() {
-        Console.WriteLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);
+    public string GetDiagram() {
+        var sb = new System.Text.StringBuilder();
+        // sb.AppendLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);
+        sb.AppendLine();
 
         int firstFret = 1;
         int lastFret = 0;
@@ -107,55 +99,55 @@ class Position {
             lastFret = Math.Max(minPos + 3, maxPos);
         }
 
-        Console.Write(" ");
+        sb.Append(" ");
 
         for (int i = 0; i < stringPos.Length; i++) {
             if (stringPos[i] != barre && stringPos[i] != mutedString) {
                 totalFingers++;
             }
 
-            Console.Write(" ");
+            sb.Append(" ");
 
             switch (stringPos[i]) {
                 case -1:
-                    Console.Write("x");
+                    sb.Append("x");
                     break;
                 case 0:
-                    Console.Write("o");
+                    sb.Append("o");
                     break;
                 default:
-                    Console.Write(" ");
+                    sb.Append(" ");
                     break;
             }
         }
 
-        Console.WriteLine();
-        Console.Write(firstFret == 1 ? " " : firstFret);
+        sb.AppendLine();
+        sb.Append(firstFret == 1 ? " " : firstFret);
 
         for (int i = firstFret; i <= lastFret; i++) {
             if (i != firstFret) {
-                Console.Write("  ");
+                sb.Append("  ");
             } else if (firstFret < 10) {
-                Console.Write(" ");
+                sb.Append(" ");
             }
 
             if (barre == i) {
-                Console.Write(new String('e', stringPos.Length * 2 - 1));
+                sb.Append(new String('e', stringPos.Length * 2 - 1));
                 finger++;
             } else {
                 int lastFinger = finger;
 
                 for (int j = 0; j < stringPos.Length; j++) {
                     if (j != 0) {
-                        Console.Write(" ");
+                        sb.Append(" ");
                     }
 
                     if (stringPos[j] == i) {
-                        // Console.Write("0");
-                        Console.Write(fingerShift + finger);
+                        // sb.Append("0");
+                        sb.Append(fingerShift + finger);
                         finger++;
                     } else {
-                        Console.Write("|");
+                        sb.Append("|");
                     }
                 }
 
@@ -164,8 +156,10 @@ class Position {
                 }
             }
 
-            Console.WriteLine();
+            sb.AppendLine();
         }
+
+        return sb.ToString();
     }
 
     int getScore() {

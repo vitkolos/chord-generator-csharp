@@ -3,7 +3,7 @@ using System;
 class Parser {
     Dictionary<string, int[]> chordSuffixes;
     public Dictionary<string, Instrument> instruments;
-    string defaultInstrument;
+    public string defaultInstrument;
 
     public Parser(string configFile) {
         chordSuffixes = new Dictionary<string, int[]>();
