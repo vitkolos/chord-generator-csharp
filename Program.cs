@@ -31,22 +31,20 @@ class Program {
             var chord = new Chord(input, parser);
             var positions = new Positions(instrument, chord);
 
-            if (positions.list != null) {
-                positions.list.Sort(Position.PositionComparer);
-                var i = positions.list.Count + 1;
+            positions.list.Sort(Position.PositionComparer);
+            var i = positions.list.Count + 1;
 
-                foreach (var position in positions.list) {
-                    if (--i <= 20) {
-                        Console.WriteLine();
-                        Console.Write(i + ". ");
-                        Console.Write(position.GetDiagram());
-                        Console.WriteLine();
-                    }
+            foreach (var position in positions.list) {
+                if (--i <= 20) {
+                    Console.WriteLine();
+                    Console.Write(i + ". ");
+                    Console.Write(position.GetDiagram());
+                    Console.WriteLine();
                 }
-
-                // Console.WriteLine($"nalezeno {positions.list.Count} variant akordu {input}");
-                Console.WriteLine("akord " + input);
             }
+
+            // Console.WriteLine($"nalezeno {positions.list.Count} variant akordu {input}");
+            Console.WriteLine("akord " + input);
         }
     }
 

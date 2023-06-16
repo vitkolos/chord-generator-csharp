@@ -81,6 +81,10 @@ class Position {
         this.score = this.getScore();
     }
 
+    public string GetText() {
+        return barre.ToString() + " " + string.Join(',', stringPos);
+    }
+
     public string GetDiagram() {
         var sb = new System.Text.StringBuilder();
         // sb.AppendLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);

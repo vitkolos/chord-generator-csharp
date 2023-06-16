@@ -152,20 +152,18 @@ public partial class Form1 : Form {
                 var chord = new Chord(input, parser);
                 var positions = new Positions(instrument, chord);
 
-                if (positions.list != null) {
-                    positions.list.Sort(Position.PositionComparer);
-                    positions.list.Reverse();
-                    var i = 0;
+                positions.list.Sort(Position.PositionComparer);
+                positions.list.Reverse();
+                var i = 0;
 
-                    foreach (var position in positions.list) {
-                        if (++i <= 10) {
-                            var diagram = new Label();
-                            diagram.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point);
-                            diagram.Text = i.ToString() + ". " + position.GetDiagram();
-                            diagram.AutoSize = true;
-                            diagram.Padding = new Padding(0, 5, 0, 5);
-                            outputArea.Controls.Add(diagram);
-                        }
+                foreach (var position in positions.list) {
+                    if (++i <= 10) {
+                        var diagram = new Label();
+                        diagram.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point);
+                        diagram.Text = i.ToString() + ". " + position.GetDiagram();
+                        diagram.AutoSize = true;
+                        diagram.Padding = new Padding(0, 5, 0, 5);
+                        outputArea.Controls.Add(diagram);
                     }
                 }
             } catch (Exception e) {

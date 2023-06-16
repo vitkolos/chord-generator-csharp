@@ -1,0 +1,6 @@
+ukulele,GCEA,19
+guitar,E2 A2 D3 G3 H3 E4
+
+major,0 4 7
+7,047t
+maj maj7,0 4 7 11
