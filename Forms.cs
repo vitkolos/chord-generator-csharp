@@ -3,7 +3,7 @@ using System.Windows.Forms;
 class Forms {
     [STAThread]
     static void Main(string[] args) {
-        if (Program.runInWindow) {
+        if (Program.RunInWindow) {
             Application.EnableVisualStyles();
             Application.Run(new Form1());
         } else {
@@ -16,6 +16,7 @@ public partial class Form1 : Form {
     Instrument instrument;
     Parser parser;
     private Label chordLabel;
+    private Label configLabel;
     private TextBox chordInput;
     private FlowLayoutPanel outputArea;
     private Button okButton;
@@ -24,11 +25,12 @@ public partial class Form1 : Form {
 
     public Form1() {
         chordLabel = new Label();
+        configLabel = new Label();
         chordInput = new TextBox();
         outputArea = new FlowLayoutPanel();
         okButton = new Button();
         instrumentRadioGroup = new FlowLayoutPanel();
-        parser = new Parser("config.txt");
+        parser = new Parser(Program.ConfigPath);
         instrument = parser.ParseInstrument()!;
         InitializeComponent();
     }
@@ -39,6 +41,7 @@ public partial class Form1 : Form {
         if (disposing && (components != null)) {
             components.Dispose();
         }
+
         base.Dispose(disposing);
     }
 
@@ -52,14 +55,31 @@ public partial class Form1 : Form {
         int boxWidth = 250;
         int buttonWidth = 100;
 
-        int[] verticalSpace = { 9, 17, vp, h, vp, h, vp };
+        int[] verticalSpace = { vp, h, vp, h, vp, h, vp * 2 };
         sharedVerticalSpace = verticalSpace;
 
-        chordLabel.Text = "Zadejte akord:";
+        chordLabel.Text = Strings.ChordLabel;
         chordLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
         chordLabel.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 1));
         chordLabel.Size = new Size(boxWidth, verticalSpace[1]);
+        chordLabel.TextAlign = ContentAlignment.BottomLeft;
         chordLabel.Click += chordLabel_Click;
+
+        configLabel.Text = Strings.ConfigLabel;
+        configLabel.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+        configLabel.Location = new Point(leftPadding + boxWidth + hp, Program.SumTo(verticalSpace, 1));
+        configLabel.Size = new Size(buttonWidth, verticalSpace[1]);
+        configLabel.TextAlign = ContentAlignment.BottomCenter;
+        configLabel.ForeColor = Color.Gray;
+        configLabel.Cursor = Cursors.Hand;
+        configLabel.Click += configLabel_Click;
+
+        ToolTip configToolTip = new ToolTip();
+        configToolTip.AutoPopDelay = 5000;
+        configToolTip.InitialDelay = 500;
+        configToolTip.ReshowDelay = 500;
+        configToolTip.ShowAlways = true;
+        configToolTip.SetToolTip(configLabel, Strings.ConfigLabelTooltip);
 
         chordInput.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 3));
         chordInput.Size = new Size(boxWidth, verticalSpace[3]);
@@ -69,7 +89,8 @@ public partial class Form1 : Form {
         okButton.Location = new Point(leftPadding + boxWidth + hp, Program.SumTo(verticalSpace, 3));
         okButton.Size = new Size(buttonWidth, verticalSpace[5]);
         okButton.TabIndex = 1;
-        okButton.Text = "Generovat";
+        okButton.Text = Strings.OkButton;
+        okButton.Cursor = Cursors.Hand;
         okButton.Click += okButton_Click;
 
         instrumentRadioGroup.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 5));
@@ -82,6 +103,7 @@ public partial class Form1 : Form {
             var rb = new RadioButton();
             rb.Text = instrumentName;
             rb.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
+            rb.Cursor = Cursors.Hand;
             rb.AutoSize = true;
             instrumentRadioGroup.Controls.Add(rb);
 
@@ -91,20 +113,23 @@ public partial class Form1 : Form {
         }
 
         outputArea.AutoScroll = true;
-        outputArea.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 7));
+        outputArea.Location = new Point(0, Program.SumTo(verticalSpace, 7));
         outputArea.Size = new Size(354, 153);
+        outputArea.BackColor = Color.White;
+        outputArea.Padding = new Padding(10);
 
         // Form1
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(leftPadding + boxWidth + hp + buttonWidth + leftPadding, 550);
         Controls.Add(chordLabel);
+        Controls.Add(configLabel);
         Controls.Add(chordInput);
         Controls.Add(instrumentRadioGroup);
         Controls.Add(okButton);
         Controls.Add(outputArea);
         Margin = new Padding(3, 2, 3, 2);
-        Text = "Generátor hmatů akordů";
+        Text = Strings.Title;
         Load += Form1_Load;
         Resize += Form1_Resize;
 
@@ -121,12 +146,12 @@ public partial class Form1 : Form {
 
     void RefreshResponsiveLayout() {
         if (sharedVerticalSpace != null) {
-            outputArea.Width = Convert.ToInt32(this.ClientSize.Width - 24);
+            outputArea.Width = Convert.ToInt32(this.ClientSize.Width);
             outputArea.Height = Convert.ToInt32(this.ClientSize.Height - Program.SumTo(sharedVerticalSpace, 7));
         }
     }
 
-    void radioButton_CheckedChanged(object? sender, EventArgs e) {
+    private void radioButton_CheckedChanged(object? sender, EventArgs e) {
         RadioButton? rb = sender as RadioButton;
 
         if (rb != null && rb.Checked) {
@@ -135,15 +160,22 @@ public partial class Form1 : Form {
         }
     }
 
-    void chordLabel_Click(object? sender, EventArgs e) {
+    private void configLabel_Click(object? sender, EventArgs e) {
+        var startInfo = new System.Diagnostics.ProcessStartInfo();
+        startInfo.UseShellExecute = true; // prevents an error
+        startInfo.FileName = Program.ConfigPath;
+        System.Diagnostics.Process.Start(startInfo);
+    }
+
+    private void chordLabel_Click(object? sender, EventArgs e) {
         chordInput.Focus();
     }
 
-    void okButton_Click(object? sender, EventArgs e) {
+    private void okButton_Click(object? sender, EventArgs e) {
         showDiagrams();
     }
 
-    void chordInput_KeyDown(object? sender, KeyEventArgs e) {
+    private void chordInput_KeyDown(object? sender, KeyEventArgs e) {
         if (e.KeyCode == Keys.Enter) {
             showDiagrams();
             e.SuppressKeyPress = true; // removes the sound

@@ -1,10 +1,11 @@
 ﻿using System;
 
 class Program {
-    public static bool runInWindow = true;
+    public static bool RunInWindow = true;
+    public const string ConfigPath = "config.txt";
 
     public static void ConsoleMain(string[] args) {
-        var parser = new Parser("config.txt");
+        var parser = new Parser(Program.ConfigPath);
         Instrument instrument = parser.ParseInstrument()!;
         string? input;
 

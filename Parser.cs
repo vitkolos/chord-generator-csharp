@@ -113,7 +113,7 @@ class Parser {
         try {
             return notes[note];
         } catch (KeyNotFoundException) {
-            throw new Exception("Akord byl chybně zadán.");
+            throw new Exception(Strings.BadChord);
         }
     }
 
@@ -136,7 +136,7 @@ class Parser {
         try {
             return chordSuffixes[input];
         } catch (KeyNotFoundException) {
-            throw new Exception("Typ akordu byl chybně zadán.");
+            throw new Exception(Strings.BadChordType);
         }
     }
 
