@@ -29,8 +29,8 @@ class Positions {
             return;
         }
 
-        bool mutedCond = (s == 0) || (stringPos[s - 1] == Position.mutedString) || (remainingNotes == 0);
-        bool nonMutedCond = (s == 0) || (stringPos[s - 1] != Position.mutedString) || (stringPos.Sum() == -s);
+        bool mutedCond = (s == 0) || (stringPos[s - 1] == Position.mutedString) || (remainingNotes == 0); // this should have no influence on final number of diagrams
+        bool nonMutedCond = (s == 0) || (stringPos[s - 1] != Position.mutedString) || (SumTo(stringPos, s) == -s);
 
         if (mutedCond) {
             stringPos[s] = Position.mutedString;
@@ -59,6 +59,16 @@ class Positions {
             }
         }
     }
+
+    int SumTo(int[] array, int to) {
+        int sum = 0;
+
+        for (int i = 0; i < to; i++) {
+            sum += array[i];
+        }
+
+        return sum;
+    }
 }
 
 class Position {
@@ -83,6 +93,7 @@ class Position {
 
     public void PrintDiagram() {
         Console.WriteLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);
+
         int firstFret = 1;
         int lastFret = 0;
         int finger = 1;
@@ -218,7 +229,7 @@ class Position {
         int hasMuted = (numberOfMuted > 0) ? 1 : 0;
         int hasTooManyMuted = (numberOfMuted >= instrument.strings.Length / 2) ? 1 : 0;
         int mutedOnBothSides = (stringPos[0] == mutedString && stringPos[stringPos.Length - 1] == mutedString) ? 1 : 0;
-        int littleBarreNotes = (barreNotes < 2) ? 1 : 0;
+        int tooLittleBarreNotes = (barreNotes < 2) ? 1 : 0;
 
         int rootWeight = (instrument.strings.Length > 4) ? 3 : 1;
         int mutedWeight = (instrument.strings.Length > 4) ? 1 : 3;
@@ -226,17 +237,17 @@ class Position {
         int s = 1000;
 
         s -= hasBarre * 10;
-        s -= hasBarre * littleBarreNotes * 100;
+        s -= barre * 5;
+        s -= hasBarre * tooLittleBarreNotes * 100;
         s -= noRoot * rootWeight * 25;
 
-        s -= minTone * 10;
-        s -= (maxPos - minTone) * 15;
-        s -= (maxPos - minPos) * 10;
-        s -= (lastString - firstString) * 5;
-        s -= numberOfFingers * 7;
+        s -= minTone * 15;
+        s -= (maxPos - minTone) * 20;
+        s -= (lastString - firstString) * (maxPos - minPos) * 10;
+        s -= numberOfFingers * 10;
 
-        s -= hasMuted * mutedWeight * 15;
-        s -= numberOfMuted * mutedWeight * 15;
+        s -= hasMuted * mutedWeight * 20;
+        s -= numberOfMuted * mutedWeight * 30;
         s -= (hasTooManyMuted + mutedOnBothSides) * 100;
 
         return s;

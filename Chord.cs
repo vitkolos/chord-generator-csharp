@@ -17,7 +17,5 @@ class Chord {
         for (int i = 0; i < notes.Length; i++) {
             notes[i] = Music.Modulo(parsedChord[i] + root);
         }
-
-        Console.WriteLine(root.ToString() + "x" + string.Join(',', notes));
     }
 }
