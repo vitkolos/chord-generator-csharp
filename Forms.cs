@@ -20,12 +20,12 @@ public partial class Form1 : Form {
     private FlowLayoutPanel outputArea;
     private Button okButton;
     private FlowLayoutPanel instrumentRadioGroup;
-    private Font drawingFont;
     int[]? sharedVerticalSpace;
     int sharedLeftPadding;
+    int diagramHorizontalPadding = 10;
+    int diagramVerticalPadding = 8;
 
     public Form1() {
-        drawingFont = new Font("Arial", 10);
         chordLabel = new Label();
         configLabel = new Label();
         chordInput = new TextBox();
@@ -119,7 +119,8 @@ public partial class Form1 : Form {
         outputArea.AutoScroll = true;
         outputArea.Location = new Point(0, Program.SumTo(verticalSpace, 7));
         outputArea.BackColor = Color.White;
-        outputArea.Padding = new Padding(leftPadding, outputAreaVerticalPadding, leftPadding, leftPadding);
+        outputArea.Padding = new Padding(leftPadding - diagramHorizontalPadding, outputAreaVerticalPadding - diagramVerticalPadding,
+            leftPadding - diagramHorizontalPadding, leftPadding);
 
         // form configuration
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -187,7 +188,7 @@ public partial class Form1 : Form {
     }
 
     private void diagram_Click(object? sender, EventArgs e) {
-        Position position = ((sender as Label)!.Tag as Position)!;
+        Position position = ((sender as Control)!.Tag as Position)!;
         position.Play(player, instrument);
     }
 
@@ -213,21 +214,26 @@ public partial class Form1 : Form {
 
                 foreach (var position in positions.list) {
                     if (++i <= Program.NumberOfDiagrams) {
-                        var diagram = new Label();
-                        diagram.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point);
-                        diagram.Text = i.ToString() + ". \n" + position.GetDiagram();
-                        diagram.AutoSize = true;
-                        diagram.Padding = new Padding(0, 5, 0, 5);
-                        diagram.Tag = position;
-                        diagram.Cursor = Cursors.Hand;
-                        diagram.Click += diagram_Click;
-                        outputArea.Controls.Add(diagram);
-
-                        // PictureBox imageDiagram = new PictureBox();
-                        // imageDiagram.Tag = position;
-                        // imageDiagram.Size = new Size(100, 100);
-                        // imageDiagram.Paint += new PaintEventHandler(this.imageDiagram_Paint);
-                        // outputArea.Controls.Add(imageDiagram);
+                        if (Program.GraphicMode) {
+                            PictureBox imageDiagram = new PictureBox();
+                            imageDiagram.Tag = position;
+                            imageDiagram.Size = new Size(Program.DiagramWidth, Program.DiagramHeight);
+                            imageDiagram.Cursor = Cursors.Hand;
+                            imageDiagram.Margin = new Padding(diagramHorizontalPadding, diagramVerticalPadding, diagramHorizontalPadding, diagramVerticalPadding);
+                            imageDiagram.Paint += new PaintEventHandler(this.imageDiagram_Paint);
+                            imageDiagram.Click += diagram_Click;
+                            outputArea.Controls.Add(imageDiagram);
+                        } else {
+                            var diagram = new Label();
+                            diagram.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point);
+                            diagram.Text = i.ToString() + ". \n" + position.GetDiagram();
+                            diagram.AutoSize = true;
+                            diagram.Margin = new Padding(diagramHorizontalPadding, diagramVerticalPadding, 0, diagramVerticalPadding);
+                            diagram.Tag = position;
+                            diagram.Cursor = Cursors.Hand;
+                            diagram.Click += diagram_Click;
+                            outputArea.Controls.Add(diagram);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -241,25 +247,15 @@ public partial class Form1 : Form {
         var message = new Label();
         message.Text = messageText;
         message.AutoSize = true;
+        message.Margin = new Padding(diagramHorizontalPadding, diagramVerticalPadding, diagramHorizontalPadding, diagramVerticalPadding);
         outputArea.Controls.Clear();
         outputArea.Controls.Add(message);
         return message;
     }
 
-    // private void imageDiagram_Paint(object? sender, PaintEventArgs e) {
-    //     Graphics g = e.Graphics;
-    //     var o = (sender as PictureBox)!;
-    //     g.DrawString("This is a diagonal line drawn on the control", drawingFont, Brushes.Blue, new Point(30, 30));
-    //     g.DrawLine(Pens.Red, 0, 0, 30, 30);
-    //     var tag = (o.Tag as Position)!;
-    //     int i = 0;
-
-    //     using (StringReader sr = new StringReader(tag.GetDiagram())) {
-    //         string? line;
-    //         while ((line = sr.ReadLine()) != null) {
-    //             i++;
-    //             g.DrawString(line, drawingFont, Brushes.Blue, new Point(0, 12 * i));
-    //         }
-    //     }
-    // }
+    private void imageDiagram_Paint(object? sender, PaintEventArgs e) {
+        Graphics g = e.Graphics;
+        Position position = ((sender as PictureBox)!.Tag as Position)!;
+        position.DrawDiagram(g);
+    }
 }

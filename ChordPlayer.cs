@@ -11,7 +11,7 @@ class ChordPlayer {
         for (int i = 0; i < stringPos.Length; i++) {
             var tone = stringPos[i] + instrument.realStrings[i] - firstTone;
 
-            if (stringPos[i] != Position.mutedString && tone < sounds.Length) {
+            if (stringPos[i] != Position.mutedString && tone < sounds.Length && tone >= 0) {
                 var p = new System.Windows.Media.MediaPlayer(); // this requires WPF
                 p.Open(new System.Uri(path + "\\" + folder + "\\" + sounds[tone]));
                 p.Play();

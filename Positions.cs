@@ -96,6 +96,10 @@ class Position {
         return diagram.GetString();
     }
 
+    public void DrawDiagram(Graphics g) {
+        diagram.Draw(g);
+    }
+
     int getScore() {
         maxPos = -1;
         minPos = instrument.frets;

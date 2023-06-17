@@ -1,7 +1,10 @@
 ﻿class Program {
     public static bool RunInWindow = true;
+    public static bool GraphicMode = true;
     public const string ConfigPath = "config.txt";
     public const int NumberOfDiagrams = 10;
+    public const int DiagramWidth = 100;
+    public const int DiagramHeight = 120;
 
     public static int SumTo(int[] array, int to) {
         int sum = 0;
