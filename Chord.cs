@@ -1,6 +1,7 @@
 class Chord {
+    Parser parser;
     int _root;
-    int _bass;
+    int _bass = -1;
     int[] _notes;
 
     public int root => _root;
@@ -8,19 +9,27 @@ class Chord {
     public int[] notes => _notes;
 
     public Chord(string input, Parser parser) {
-        _root = parser.ParseNote(input[0]);
-        int accidental = input.Length > 1 ? parser.ParseAccidental(input[1]) : 0;
-
-        if (_root != 10) { // Bb equals B (in German notation)
-            _root = Music.Modulo(_root + accidental);
-        }
-
-        string variant = input.Substring(accidental == 0 ? 1 : 2);
+        this.parser = parser;
+        string[] inputParts = input.Split('/');
+        int accidental;
+        _root = parser.ParseNoteWithAccidental(inputParts[0], out accidental);
+        string variant = inputParts[0].Substring(accidental == 0 ? 1 : 2);
         int[] parsedChord = parser.ParseChord(variant);
         _notes = new int[parsedChord.Length];
 
         for (int i = 0; i < notes.Length; i++) {
-            _notes[i] = Music.Modulo(parsedChord[i] + _root);
+            notes[i] = Music.Modulo(parsedChord[i] + root);
+        }
+
+        if (inputParts.Length > 1) {
+            _bass = parser.ParseNoteWithAccidental(inputParts[1], out _bass);
+
+            if (Array.IndexOf(notes, bass) == -1) {
+                var newNotes = new int[notes.Length + 1];
+                newNotes[0] = bass;
+                notes.CopyTo(newNotes, 1);
+                _notes = newNotes;
+            }
         }
     }
 }

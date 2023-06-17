@@ -71,6 +71,7 @@ class Position {
     Instrument instrument;
     Chord chord;
     int[] stringPos;
+    public int Score => score;
 
     public Position(Instrument instrument, Chord chord, int[] stringPos, int barre) {
         this.barre = barre;
@@ -222,6 +223,9 @@ class Position {
         }
 
         int noRoot = (Music.Modulo(lowestTone) != chord.root) ? 1 : 0;
+        int hasBass = (chord.bass != -1) ? 1 : 0;
+        int badBass = (Music.Modulo(lowestTone) != chord.bass) ? 1 : 0;
+
         int hasMuted = (numberOfMuted > 0) ? 1 : 0;
         int hasTooManyMuted = (numberOfMuted >= instrument.strings.Length / 2) ? 1 : 0;
         int mutedOnBothSides = (stringPos[0] == mutedString && stringPos[stringPos.Length - 1] == mutedString) ? 1 : 0;
@@ -235,7 +239,8 @@ class Position {
         s -= hasBarre * 10;
         s -= barre * 5;
         s -= hasBarre * tooLittleBarreNotes * 100;
-        s -= noRoot * rootWeight * 25;
+        s -= (1 - hasBass) * noRoot * rootWeight * 25;
+        s -= hasBass * badBass * 100;
 
         s -= minTone * 15;
         s -= (maxPos - minTone) * 20;

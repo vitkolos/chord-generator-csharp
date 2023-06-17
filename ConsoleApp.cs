@@ -33,7 +33,7 @@ class ConsoleApp {
             foreach (var position in positions.list) {
                 if (--i <= Program.NumberOfDiagrams) {
                     Console.WriteLine();
-                    Console.WriteLine(i + ". " + position.GetText());
+                    Console.WriteLine(i + ". " + position.GetText() + " " + position.Score);
                     Console.Write(position.GetDiagram());
                     Console.WriteLine();
                 }

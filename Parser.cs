@@ -34,7 +34,7 @@ class Parser {
     void ParseInstrumentFromLine(string[] lineParts) {
         string input = lineParts[1];
         int frets = Music.DefaultNumberOfFrets;
-        char[] stringNames;
+        string[] stringNames;
         int[] octaves;
 
         if (defaultInstrumentName == "") {
@@ -47,19 +47,22 @@ class Parser {
 
         if (input.Contains(' ')) {
             string[] s = input.Split(' ');
-            stringNames = new char[s.Length];
+            stringNames = new string[s.Length];
             octaves = new int[s.Length];
 
             for (int i = 0; i < s.Length; i++) {
-                stringNames[i] = s[i][0];
+                int firstNumericIndex = s[i].IndexOfAny("1234567890".ToCharArray());
 
-                if (s[i].Length == 2) {
-                    octaves[i] = s[i][1] - '0';
+                if (firstNumericIndex == -1) {
+                    stringNames[i] = s[i];
+                } else {
+                    stringNames[i] = s[i].Substring(0, firstNumericIndex);
+                    octaves[i] = int.Parse(s[i].Substring(firstNumericIndex));
                 }
             }
         } else {
             octaves = new int[input.Length];
-            stringNames = input.ToCharArray();
+            stringNames = input.ToCharArray().Select(c => c.ToString()).ToArray();
         }
 
         var instrument = new Instrument(this, lineParts[0], frets, stringNames, octaves);
@@ -95,6 +98,22 @@ class Parser {
         foreach (var variant in chordVariants) {
             chordSuffixes.Add(variant, notes);
         }
+    }
+
+    public int ParseNoteWithAccidental(string input, out int accidental) {
+        int note = ParseNote(input[0]);
+        accidental = input.Length > 1 ? ParseAccidental(input[1]) : 0;
+
+        if (note != 10) { // Bb equals B (in German notation)
+            note = Music.Modulo(note + accidental);
+        }
+
+        return note;
+    }
+
+    public int ParseNoteWithAccidental(string input) {
+        int accidental;
+        return ParseNoteWithAccidental(input, out accidental);
     }
 
     public int ParseNote(char note) {
