@@ -1,5 +1,3 @@
-using System.Windows.Forms;
-
 class Forms {
     [STAThread]
     static void Main(string[] args) {
@@ -7,7 +5,7 @@ class Forms {
             Application.EnableVisualStyles();
             Application.Run(new Form1());
         } else {
-            Program.ConsoleMain(args);
+            ConsoleApp.Run(args);
         }
     }
 }
@@ -157,7 +155,7 @@ public partial class Form1 : Form {
 
         if (rb != null && rb.Checked) {
             instrument = parser.ParseInstrument(rb.Text)!;
-            showDiagrams();
+            ShowDiagrams();
         }
     }
 
@@ -181,17 +179,17 @@ public partial class Form1 : Form {
     }
 
     private void okButton_Click(object? sender, EventArgs e) {
-        showDiagrams();
+        ShowDiagrams();
     }
 
     private void chordInput_KeyDown(object? sender, KeyEventArgs e) {
         if (e.KeyCode == Keys.Enter) {
-            showDiagrams();
+            ShowDiagrams();
             e.SuppressKeyPress = true; // removes the sound
         }
     }
 
-    void showDiagrams() {
+    void ShowDiagrams() {
         string input = chordInput.Text;
 
         if (input != "") {
