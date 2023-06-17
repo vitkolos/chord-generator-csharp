@@ -3,6 +3,7 @@
 class Program {
     public static bool RunInWindow = true;
     public const string ConfigPath = "config.txt";
+    public const int NumberOfDiagrams = 10;
 
     public static void ConsoleMain(string[] args) {
         var parser = new Parser(Program.ConfigPath);
@@ -36,9 +37,9 @@ class Program {
             var i = positions.list.Count + 1;
 
             foreach (var position in positions.list) {
-                if (--i <= 20) {
+                if (--i <= Program.NumberOfDiagrams) {
                     Console.WriteLine();
-                    Console.Write(i + ". ");
+                    Console.WriteLine(i + ". " + position.GetText());
                     Console.Write(position.GetDiagram());
                     Console.WriteLine();
                 }

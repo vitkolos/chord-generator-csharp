@@ -87,8 +87,6 @@ class Position {
 
     public string GetDiagram() {
         var sb = new System.Text.StringBuilder();
-        // sb.AppendLine(barre.ToString() + " " + string.Join(',', stringPos) + " " + score);
-        sb.AppendLine();
 
         int firstFret = 1;
         int lastFret = 0;

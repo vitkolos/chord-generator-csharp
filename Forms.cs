@@ -22,6 +22,7 @@ public partial class Form1 : Form {
     private Button okButton;
     private FlowLayoutPanel instrumentRadioGroup;
     int[]? sharedVerticalSpace;
+    int sharedLeftPadding;
 
     public Form1() {
         chordLabel = new Label();
@@ -48,55 +49,55 @@ public partial class Form1 : Form {
     private void InitializeComponent() {
         SuspendLayout();
 
-        int h = 23; // item height
-        int vp = 5; // item vertical padding
-        int hp = 5;
-        int leftPadding = 10;
-        int boxWidth = 250;
+        int windowHeight = 500;
+        
+        int verticalPadding = 8;
+        int itemHeight = 23;
+        
+        int[] verticalSpace = { 10, itemHeight, verticalPadding, itemHeight, verticalPadding, itemHeight, 15 };
+        // top padding, label, padding, input, padding, radio, padding, (output area)
+        
+        int horizontalPadding = 10;
+        int leftPadding = 20;
+        int inputBoxWidth = 250;
         int buttonWidth = 100;
 
-        int[] verticalSpace = { vp, h, vp, h, vp, h, vp * 2 };
         sharedVerticalSpace = verticalSpace;
+        sharedLeftPadding = leftPadding;
 
         chordLabel.Text = Strings.ChordLabel;
-        chordLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+        chordLabel.Font = new Font("Segoe UI", 10F);
         chordLabel.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 1));
-        chordLabel.Size = new Size(boxWidth, verticalSpace[1]);
+        chordLabel.Size = new Size(inputBoxWidth, verticalSpace[1]);
         chordLabel.TextAlign = ContentAlignment.BottomLeft;
         chordLabel.Click += chordLabel_Click;
 
         configLabel.Text = Strings.ConfigLabel;
-        configLabel.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
-        configLabel.Location = new Point(leftPadding + boxWidth + hp, Program.SumTo(verticalSpace, 1));
+        configLabel.Font = new Font("Segoe UI", 8F);
+        configLabel.Location = new Point(leftPadding + inputBoxWidth + horizontalPadding, Program.SumTo(verticalSpace, 1));
         configLabel.Size = new Size(buttonWidth, verticalSpace[1]);
         configLabel.TextAlign = ContentAlignment.BottomCenter;
-        configLabel.ForeColor = Color.Gray;
+        configLabel.ForeColor = Color.DimGray;
         configLabel.Cursor = Cursors.Hand;
         configLabel.Click += configLabel_Click;
 
-        ToolTip configToolTip = new ToolTip();
-        configToolTip.AutoPopDelay = 5000;
-        configToolTip.InitialDelay = 500;
-        configToolTip.ReshowDelay = 500;
-        configToolTip.ShowAlways = true;
-        configToolTip.SetToolTip(configLabel, Strings.ConfigLabelTooltip);
-
         chordInput.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 3));
-        chordInput.Size = new Size(boxWidth, verticalSpace[3]);
+        chordInput.Size = new Size(inputBoxWidth, verticalSpace[3]);
         chordInput.TabIndex = 0;
         chordInput.KeyDown += chordInput_KeyDown;
 
-        okButton.Location = new Point(leftPadding + boxWidth + hp, Program.SumTo(verticalSpace, 3));
-        okButton.Size = new Size(buttonWidth, verticalSpace[5]);
+        okButton.Location = new Point(leftPadding + inputBoxWidth + horizontalPadding, Program.SumTo(verticalSpace, 3));
+        okButton.Size = new Size(buttonWidth, verticalSpace[3]);
         okButton.TabIndex = 1;
         okButton.Text = Strings.OkButton;
         okButton.Cursor = Cursors.Hand;
         okButton.Click += okButton_Click;
 
         instrumentRadioGroup.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 5));
+        instrumentRadioGroup.Size = new Size(0, verticalSpace[5] + verticalSpace[6]); // including the padding ensures there is enough space for a horizontal scrollbar
         instrumentRadioGroup.TabIndex = 2;
-        instrumentRadioGroup.Size = new Size(0, 0);
-        instrumentRadioGroup.AutoSize = true;
+        instrumentRadioGroup.WrapContents = false;
+        instrumentRadioGroup.AutoScroll = true;
         List<string> instrumentNames = parser.instruments.Keys.ToList();
 
         foreach (string instrumentName in instrumentNames) {
@@ -114,21 +115,19 @@ public partial class Form1 : Form {
 
         outputArea.AutoScroll = true;
         outputArea.Location = new Point(0, Program.SumTo(verticalSpace, 7));
-        outputArea.Size = new Size(354, 153);
         outputArea.BackColor = Color.White;
-        outputArea.Padding = new Padding(10);
+        outputArea.Padding = new Padding(leftPadding);
 
-        // Form1
+        // form configuration
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(leftPadding + boxWidth + hp + buttonWidth + leftPadding, 550);
+        ClientSize = new Size(leftPadding + inputBoxWidth + horizontalPadding + buttonWidth + leftPadding, windowHeight);
         Controls.Add(chordLabel);
         Controls.Add(configLabel);
         Controls.Add(chordInput);
         Controls.Add(instrumentRadioGroup);
         Controls.Add(okButton);
         Controls.Add(outputArea);
-        Margin = new Padding(3, 2, 3, 2);
         Text = Strings.Title;
         Load += Form1_Load;
         Resize += Form1_Resize;
@@ -148,6 +147,7 @@ public partial class Form1 : Form {
         if (sharedVerticalSpace != null) {
             outputArea.Width = Convert.ToInt32(this.ClientSize.Width);
             outputArea.Height = Convert.ToInt32(this.ClientSize.Height - Program.SumTo(sharedVerticalSpace, 7));
+            instrumentRadioGroup.Width = Convert.ToInt32(this.ClientSize.Width - sharedLeftPadding * 2);
         }
     }
 
@@ -165,6 +165,14 @@ public partial class Form1 : Form {
         startInfo.UseShellExecute = true; // prevents an error
         startInfo.FileName = Program.ConfigPath;
         System.Diagnostics.Process.Start(startInfo);
+        Label m = WriteMessage(Strings.ConfigMessage);
+        m.Cursor = Cursors.Hand;
+        m.Click += configMessage_Click;
+    }
+
+    private void configMessage_Click(object? sender, EventArgs e) {
+        Application.Restart();
+        Environment.Exit(0);
     }
 
     private void chordLabel_Click(object? sender, EventArgs e) {
@@ -187,30 +195,37 @@ public partial class Form1 : Form {
 
         if (input != "") {
             try {
-                outputArea.Controls.Clear();
                 var chord = new Chord(input, parser);
                 var positions = new Positions(instrument, chord);
 
                 positions.list.Sort(Position.PositionComparer);
                 positions.list.Reverse();
                 var i = 0;
+                outputArea.Controls.Clear();
 
                 foreach (var position in positions.list) {
-                    if (++i <= 10) {
+                    if (++i <= Program.NumberOfDiagrams) {
                         var diagram = new Label();
                         diagram.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point);
-                        diagram.Text = i.ToString() + ". " + position.GetDiagram();
+                        diagram.Text = i.ToString() + ". \n" + position.GetDiagram();
                         diagram.AutoSize = true;
                         diagram.Padding = new Padding(0, 5, 0, 5);
                         outputArea.Controls.Add(diagram);
                     }
                 }
             } catch (Exception e) {
-                var message = new Label();
-                message.Text = e.Message;
-                message.AutoSize = true;
-                outputArea.Controls.Add(message);
+                Label m = WriteMessage(e.Message);
+                m.ForeColor = Color.DarkRed;
             }
         }
+    }
+
+    Label WriteMessage(string messageText) {
+        var message = new Label();
+        message.Text = messageText;
+        message.AutoSize = true;
+        outputArea.Controls.Clear();
+        outputArea.Controls.Add(message);
+        return message;
     }
 }
