@@ -31,6 +31,8 @@ class Tests {
         TestChord(parser, "guitar", "D7", "0 -1,-1,0,2,1,2");
         TestChord(parser, "ukulele", "C", "0 0,0,0,3");
         TestChord(parser, "ukulele", "G", "0 0,2,3,2");
+        TestChord(parser, "guitar", "C/E", "0 0,3,2,0,1,0");
+        TestChord(parser, "guitar", "Dm", "0 -1,-1,0,2,3,1");
     }
 
     static void ShouldEqual(int a, int b, string info) {
