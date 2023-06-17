@@ -97,7 +97,7 @@ public partial class Form1 : Form {
         instrumentRadioGroup.TabIndex = 2;
         instrumentRadioGroup.WrapContents = false;
         instrumentRadioGroup.AutoScroll = true;
-        List<string> instrumentNames = parser.instruments.Keys.ToList();
+        List<string> instrumentNames = parser.GetInstrumentsNames();
 
         foreach (string instrumentName in instrumentNames) {
             var rb = new RadioButton();

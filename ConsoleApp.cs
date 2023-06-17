@@ -5,7 +5,7 @@ class ConsoleApp {
         string? input;
 
         while (true) {
-            Console.WriteLine("Podporovane nastroje: {0}", string.Join(", ", parser.instruments.Keys));
+            Console.WriteLine("Podporovane nastroje: {0}", string.Join(", ", parser.GetInstrumentsNames()));
             Console.WriteLine($"Zvoleny nastroj: {instrument.name}");
             Console.Write("Zadejte akord nebo nastroj: ");
             input = Console.ReadLine();

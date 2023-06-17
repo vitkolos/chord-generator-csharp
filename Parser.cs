@@ -1,6 +1,6 @@
 class Parser {
     Dictionary<string, int[]> chordSuffixes;
-    public Dictionary<string, Instrument> instruments;
+    Dictionary<string, Instrument> instruments;
     string defaultInstrumentName;
 
     public Parser(string configFile) {
@@ -148,5 +148,9 @@ class Parser {
 
     public Instrument GetDefaultInstrument() {
         return instruments[defaultInstrumentName];
+    }
+
+    public List<string> GetInstrumentsNames() {
+        return instruments.Keys.ToList();
     }
 }
