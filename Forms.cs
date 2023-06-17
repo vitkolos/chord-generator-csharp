@@ -19,10 +19,12 @@ public partial class Form1 : Form {
     private FlowLayoutPanel outputArea;
     private Button okButton;
     private FlowLayoutPanel instrumentRadioGroup;
+    private Font drawingFont;
     int[]? sharedVerticalSpace;
     int sharedLeftPadding;
 
     public Form1() {
+        drawingFont = new Font("Arial", 10);
         chordLabel = new Label();
         configLabel = new Label();
         chordInput = new TextBox();
@@ -48,14 +50,14 @@ public partial class Form1 : Form {
         SuspendLayout();
 
         int windowHeight = 500;
-        
+
         int verticalPadding = 8;
         int itemHeight = 23;
         int outputAreaVerticalPadding = 15;
-        
+
         int[] verticalSpace = { 10, itemHeight, verticalPadding, itemHeight, verticalPadding, itemHeight, outputAreaVerticalPadding };
         // top padding, label, padding, input, padding, radio, padding, (output area)
-        
+
         int horizontalPadding = 10;
         int leftPadding = 20;
         int inputBoxWidth = 250;
@@ -210,6 +212,12 @@ public partial class Form1 : Form {
                         diagram.AutoSize = true;
                         diagram.Padding = new Padding(0, 5, 0, 5);
                         outputArea.Controls.Add(diagram);
+
+                        // PictureBox imageDiagram = new PictureBox();
+                        // imageDiagram.Tag = position;
+                        // imageDiagram.Size = new Size(100, 100);
+                        // imageDiagram.Paint += new PaintEventHandler(this.imageDiagram_Paint);
+                        // outputArea.Controls.Add(imageDiagram);
                     }
                 }
             } catch (Exception e) {
@@ -227,4 +235,21 @@ public partial class Form1 : Form {
         outputArea.Controls.Add(message);
         return message;
     }
+
+    // private void imageDiagram_Paint(object? sender, PaintEventArgs e) {
+    //     Graphics g = e.Graphics;
+    //     var o = (sender as PictureBox)!;
+    //     g.DrawString("This is a diagonal line drawn on the control", drawingFont, Brushes.Blue, new Point(30, 30));
+    //     g.DrawLine(Pens.Red, 0, 0, 30, 30);
+    //     var tag = (o.Tag as Position)!;
+    //     int i = 0;
+
+    //     using (StringReader sr = new StringReader(tag.GetDiagram())) {
+    //         string? line;
+    //         while ((line = sr.ReadLine()) != null) {
+    //             i++;
+    //             g.DrawString(line, drawingFont, Brushes.Blue, new Point(0, 12 * i));
+    //         }
+    //     }
+    // }
 }

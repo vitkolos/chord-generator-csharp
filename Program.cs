@@ -1,5 +1,5 @@
 ﻿class Program {
-    public static bool RunInWindow = false;
+    public static bool RunInWindow = true;
     public const string ConfigPath = "config.txt";
     public const int NumberOfDiagrams = 10;
 

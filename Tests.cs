@@ -76,7 +76,7 @@ class Tests {
             throw new Exception("is null");
         }
 
-        Console.WriteLine(" is not null (OK)");
+        Console.WriteLine(" is not null OK");
     }
 
     static void TestChord(Parser parser, string instrumentName, string chordName, string diagram) {

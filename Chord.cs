@@ -1,12 +1,10 @@
 class Chord {
     Parser parser;
     int _root;
-    int _bass = -1;
-    int[] _notes;
-
     public int root => _root;
+    int _bass = -1;
     public int bass => _bass;
-    public int[] notes => _notes;
+    public int[] notes;
 
     public Chord(string input, Parser parser) {
         this.parser = parser;
@@ -15,7 +13,7 @@ class Chord {
         _root = parser.ParseNoteWithAccidental(inputParts[0], out accidental);
         string variant = inputParts[0].Substring(accidental == 0 ? 1 : 2);
         int[] parsedChord = parser.ParseChord(variant);
-        _notes = new int[parsedChord.Length];
+        notes = new int[parsedChord.Length];
 
         for (int i = 0; i < notes.Length; i++) {
             notes[i] = Music.Modulo(parsedChord[i] + root);
@@ -28,7 +26,7 @@ class Chord {
                 var newNotes = new int[notes.Length + 1];
                 newNotes[0] = bass;
                 notes.CopyTo(newNotes, 1);
-                _notes = newNotes;
+                notes = newNotes;
             }
         }
     }

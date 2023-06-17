@@ -65,13 +65,14 @@ class Position {
     public const int emptyString = 0;
     public const int mutedString = -1;
     int barre = 0;
-    int score = 0;
+    int _score = 0;
+    public int score => _score;
     int minPos = 0;
     int maxPos = 0;
     Instrument instrument;
     Chord chord;
+    Diagram diagram;
     int[] stringPos;
-    public int Score => score;
 
     public Position(Instrument instrument, Chord chord, int[] stringPos, int barre) {
         this.barre = barre;
@@ -79,7 +80,8 @@ class Position {
         this.chord = chord;
         this.stringPos = new int[instrument.strings.Length];
         stringPos.CopyTo(this.stringPos, 0);
-        this.score = this.getScore();
+        this._score = this.getScore();
+        diagram = new Diagram(this.stringPos, barre, minPos, maxPos);
     }
 
     public string GetText() {
@@ -87,82 +89,7 @@ class Position {
     }
 
     public string GetDiagram() {
-        var sb = new System.Text.StringBuilder();
-
-        int firstFret = 1;
-        int lastFret = 0;
-        int finger = 1;
-        int totalFingers = (barre != 0) ? 1 : 0;
-        int fingerShift = 0;
-
-        if (maxPos <= 5) {
-            lastFret = Math.Max(4, maxPos);
-        } else {
-            firstFret = minPos;
-            lastFret = Math.Max(minPos + 3, maxPos);
-        }
-
-        sb.Append(" ");
-
-        for (int i = 0; i < stringPos.Length; i++) {
-            if (stringPos[i] != barre && stringPos[i] != mutedString) {
-                totalFingers++;
-            }
-
-            sb.Append(" ");
-
-            switch (stringPos[i]) {
-                case -1:
-                    sb.Append("x");
-                    break;
-                case 0:
-                    sb.Append("o");
-                    break;
-                default:
-                    sb.Append(" ");
-                    break;
-            }
-        }
-
-        sb.AppendLine();
-        sb.Append(firstFret == 1 ? " " : firstFret);
-
-        for (int i = firstFret; i <= lastFret; i++) {
-            if (i != firstFret) {
-                sb.Append("  ");
-            } else if (firstFret < 10) {
-                sb.Append(" ");
-            }
-
-            if (barre == i) {
-                sb.Append(new String('e', stringPos.Length * 2 - 1));
-                finger++;
-            } else {
-                int lastFinger = finger;
-
-                for (int j = 0; j < stringPos.Length; j++) {
-                    if (j != 0) {
-                        sb.Append(" ");
-                    }
-
-                    if (stringPos[j] == i) {
-                        // sb.Append("0");
-                        sb.Append(fingerShift + finger);
-                        finger++;
-                    } else {
-                        sb.Append("|");
-                    }
-                }
-
-                if (i > barre && lastFinger == finger && totalFingers + fingerShift < Music.AvailableFingers - 1) {
-                    fingerShift++;
-                }
-            }
-
-            sb.AppendLine();
-        }
-
-        return sb.ToString();
+        return diagram.GetString();
     }
 
     int getScore() {

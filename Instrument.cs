@@ -1,19 +1,16 @@
 class Instrument {
     string _name;
-    int _frets;
-    int[] _strings;
-    int[] _realStrings;
-
     public string name => _name;
+    int _frets;
     public int frets => _frets;
-    public int[] strings => _strings;
-    public int[] realStrings => _realStrings;
+    public int[] strings;
+    public int[] realStrings;
 
     public Instrument(Parser parser, string name, int frets, string[] stringNames, int[] octaves) {
         _name = name;
         _frets = frets;
-        _strings = new int[stringNames.Length];
-        _realStrings = new int[stringNames.Length];
+        strings = new int[stringNames.Length];
+        realStrings = new int[stringNames.Length];
 
         for (int i = 0; i < stringNames.Length; i++) {
             strings[i] = parser.ParseNoteWithAccidental(stringNames[i]);
