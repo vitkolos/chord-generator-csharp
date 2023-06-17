@@ -62,6 +62,11 @@ class Parser {
             }
         } else {
             octaves = new int[input.Length];
+
+            for (int i = 0; i < octaves.Length; i++) {
+                octaves[i] = Music.DefaultOctave;
+            }
+
             stringNames = input.ToCharArray().Select(c => c.ToString()).ToArray();
         }
 

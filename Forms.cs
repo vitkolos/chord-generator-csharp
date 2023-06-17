@@ -13,6 +13,7 @@ class Forms {
 public partial class Form1 : Form {
     Instrument instrument;
     Parser parser;
+    ChordPlayer player;
     private Label chordLabel;
     private Label configLabel;
     private TextBox chordInput;
@@ -32,6 +33,7 @@ public partial class Form1 : Form {
         okButton = new Button();
         instrumentRadioGroup = new FlowLayoutPanel();
         parser = new Parser(Program.ConfigPath);
+        player = new ChordPlayer();
         instrument = parser.GetDefaultInstrument();
         InitializeComponent();
     }
@@ -184,6 +186,11 @@ public partial class Form1 : Form {
         ShowDiagrams();
     }
 
+    private void diagram_Click(object? sender, EventArgs e) {
+        Position position = ((sender as Label)!.Tag as Position)!;
+        position.Play(player, instrument);
+    }
+
     private void chordInput_KeyDown(object? sender, KeyEventArgs e) {
         if (e.KeyCode == Keys.Enter) {
             ShowDiagrams();
@@ -211,6 +218,9 @@ public partial class Form1 : Form {
                         diagram.Text = i.ToString() + ". \n" + position.GetDiagram();
                         diagram.AutoSize = true;
                         diagram.Padding = new Padding(0, 5, 0, 5);
+                        diagram.Tag = position;
+                        diagram.Cursor = Cursors.Hand;
+                        diagram.Click += diagram_Click;
                         outputArea.Controls.Add(diagram);
 
                         // PictureBox imageDiagram = new PictureBox();

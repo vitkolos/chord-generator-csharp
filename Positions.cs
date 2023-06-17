@@ -84,6 +84,10 @@ class Position {
         diagram = new Diagram(this.stringPos, barre, minPos, maxPos);
     }
 
+    public void Play(ChordPlayer player, Instrument instrument) {
+        player.PlayChord(stringPos, instrument);
+    }
+
     public string GetText() {
         return barre.ToString() + " " + string.Join(',', stringPos);
     }

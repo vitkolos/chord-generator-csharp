@@ -19,6 +19,7 @@ class Music {
     public const int AvailableFingers = 4;
     public const int DefaultNumberOfFrets = 20;
     public const int HighestNote = 200;
+    public const int DefaultOctave = 4;
 
     public static int Modulo(int note) {
         int barreOverflowPrevention = 10; // we suppose every instrument has less than 120 frets
