@@ -2,12 +2,16 @@ class Forms {
     [STAThread]
     static void Main(string[] args) {
         if (Program.RunInWindow) {
+            SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.Run(new Form1());
         } else {
             ConsoleApp.Run(args);
         }
     }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool SetProcessDPIAware();
 }
 
 public partial class Form1 : Form {
@@ -15,7 +19,7 @@ public partial class Form1 : Form {
     Parser parser;
     ChordPlayer player;
     private Label chordLabel;
-    private Label configLabel;
+    private LinkLabel configLabel;
     private TextBox chordInput;
     private FlowLayoutPanel outputArea;
     private Button okButton;
@@ -27,7 +31,7 @@ public partial class Form1 : Form {
 
     public Form1() {
         chordLabel = new Label();
-        configLabel = new Label();
+        configLabel = new LinkLabel();
         chordInput = new TextBox();
         outputArea = new FlowLayoutPanel();
         okButton = new Button();
@@ -80,9 +84,13 @@ public partial class Form1 : Form {
         configLabel.Location = new Point(leftPadding + inputBoxWidth + horizontalPadding, Program.SumTo(verticalSpace, 1));
         configLabel.Size = new Size(buttonWidth, verticalSpace[1]);
         configLabel.TextAlign = ContentAlignment.BottomCenter;
-        configLabel.ForeColor = Color.DimGray;
+        configLabel.TabStop = true;
+        configLabel.TabIndex = 3;
+        configLabel.LinkColor = Color.DimGray;
+        configLabel.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
         configLabel.Cursor = Cursors.Hand;
         configLabel.Click += configLabel_Click;
+        configLabel.LinkClicked += configLabel_Click;
 
         chordInput.Location = new Point(leftPadding, Program.SumTo(verticalSpace, 3));
         chordInput.Size = new Size(inputBoxWidth, verticalSpace[3]);
