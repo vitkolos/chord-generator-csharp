@@ -32,7 +32,7 @@ public partial class Form1 : Form {
         okButton = new Button();
         instrumentRadioGroup = new FlowLayoutPanel();
         parser = new Parser(Program.ConfigPath);
-        instrument = parser.ParseInstrument()!;
+        instrument = parser.GetDefaultInstrument();
         InitializeComponent();
     }
 
@@ -53,8 +53,9 @@ public partial class Form1 : Form {
         
         int verticalPadding = 8;
         int itemHeight = 23;
+        int outputAreaVerticalPadding = 15;
         
-        int[] verticalSpace = { 10, itemHeight, verticalPadding, itemHeight, verticalPadding, itemHeight, 15 };
+        int[] verticalSpace = { 10, itemHeight, verticalPadding, itemHeight, verticalPadding, itemHeight, outputAreaVerticalPadding };
         // top padding, label, padding, input, padding, radio, padding, (output area)
         
         int horizontalPadding = 10;
@@ -108,7 +109,7 @@ public partial class Form1 : Form {
             rb.AutoSize = true;
             instrumentRadioGroup.Controls.Add(rb);
 
-            if (parser.defaultInstrument == instrumentName) {
+            if (instrument.name == instrumentName) {
                 rb.Checked = true;
             }
         }
@@ -116,7 +117,7 @@ public partial class Form1 : Form {
         outputArea.AutoScroll = true;
         outputArea.Location = new Point(0, Program.SumTo(verticalSpace, 7));
         outputArea.BackColor = Color.White;
-        outputArea.Padding = new Padding(leftPadding);
+        outputArea.Padding = new Padding(leftPadding, outputAreaVerticalPadding, leftPadding, leftPadding);
 
         // form configuration
         AutoScaleDimensions = new SizeF(7F, 15F);

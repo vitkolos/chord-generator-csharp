@@ -3,13 +3,13 @@ using System;
 class Parser {
     Dictionary<string, int[]> chordSuffixes;
     public Dictionary<string, Instrument> instruments;
-    public string defaultInstrument;
+    string defaultInstrumentName;
 
     public Parser(string configFile) {
         chordSuffixes = new Dictionary<string, int[]>();
         instruments = new Dictionary<string, Instrument>();
         bool inInstrumentSection = true;
-        defaultInstrument = "";
+        defaultInstrumentName = "";
 
         using (var reader = new System.IO.StreamReader(configFile)) {
             string? line;
@@ -39,8 +39,8 @@ class Parser {
         char[] stringNames;
         int[] octaves;
 
-        if (defaultInstrument == "") {
-            defaultInstrument = lineParts[0];
+        if (defaultInstrumentName == "") {
+            defaultInstrumentName = lineParts[0];
         }
 
         if (lineParts.Length > 2) {
@@ -140,15 +140,15 @@ class Parser {
         }
     }
 
-    public Instrument? ParseInstrument(string? input = null) {
-        if (input == null) {
-            input = defaultInstrument;
-        }
-
+    public Instrument? ParseInstrument(string input) {
         try {
             return instruments[input];
         } catch (KeyNotFoundException) {
             return null;
         }
+    }
+
+    public Instrument GetDefaultInstrument() {
+        return instruments[defaultInstrumentName];
     }
 }

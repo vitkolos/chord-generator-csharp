@@ -7,7 +7,7 @@ class Program {
 
     public static void ConsoleMain(string[] args) {
         var parser = new Parser(Program.ConfigPath);
-        Instrument instrument = parser.ParseInstrument()!;
+        Instrument instrument = parser.GetDefaultInstrument();
         string? input;
 
         while (true) {
