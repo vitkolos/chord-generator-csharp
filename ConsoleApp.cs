@@ -1,4 +1,4 @@
-class ConsoleApp {
+static class ConsoleApp {
     public static void Run(string[] args) {
         var parser = new Parser(Program.ConfigPath);
         Instrument instrument = parser.GetDefaultInstrument();

@@ -5,7 +5,7 @@
     NPRG031 Programování 2
 */
 
-class Program {
+static class Program {
     public static bool RunInWindow = true;
     public static bool GraphicMode = true;
     public const string ConfigPath = "config.txt";
@@ -60,7 +60,7 @@ class Program {
     }
 }
 
-class Music {
+static class Music {
     public const int NumberOfNotes = 12;
     public const int AvailableFingers = 4;
     public const int DefaultNumberOfFrets = 20;

@@ -1,4 +1,4 @@
-class Tests {
+static class Tests {
     public static void Run() {
         var parser = new Parser("testing-config.txt");
 

@@ -100,6 +100,25 @@ Jedním z možných jiných řešení je algoritmus, který by na každé strun�
 
 ### Prsty a diagramy
 
+Problém počítání prstů jsem vyřešil poměrně jednoduše, číslují se zleva doprava, shora dolů. Navíc jsem přidal přeskakování, mechanismus jsem okoukal u hmatů na ukulele. Za každý prázdný pražec (pod barré) se počítadlo posouvá o jeden prst. Jediným omezením je to, že takové přičítání se nesmí dopočítat malíčku.
+
+Vykreslování diagramů naopak obsahuje nemálo výpočtů, vše se točí okolo rozměrů plátna a dělení volného místa mezi jednotlivé pražce či struny. Zajímavým pozorováním, které však plyne ze známých důvodů, je, že obvykle stačí vykreslit jen malou část hmatníku, většina akordů se vejde na pět pražců.
+
+## Program
+
+### Formulářová aplikace
+
+Okenní formulářová aplikace je implementována pomocí frameworku Windows Forms. Možnost současného přehrávání několika hudebních stop zajišťuje knihovna Windows Presentation Foundation. Bezchybné vykreslení na zařízení se „zvětšeným“ zobrazením umožňuje externí metoda `SetProcessDPIAware`.
+
+### Konzolová aplikace a testy
+
+Program lze rovněž spustit v konzoli, stačí použít argument `console`. Po zadání jména akordu se vypíšou jeho diagramy (deset nejlepších) v sestupném pořadí podle skóre. Zadání názvu nástroje na daný nástroj přepne. Slovní spojení `run tests` spustí sadu testů a vypíše jejich výstup. Testy lze rovněž provést spuštěním programu s argumentem `tests`.
+
+### Zpracování vstupu
+
+O zpracování vstupu všeho druhu se stará třída `Parser`. Ta rovněž při spuštění programu načítá konfiguraci.
+
+### Konstanty
 
 
 ## Závěr
