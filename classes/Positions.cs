@@ -91,7 +91,7 @@ class Position {
         return barre.ToString() + " " + string.Join(',', stringPos);
     }
 
-    public Diagram GetDiagram() {
+    Diagram GetDiagram() {
         if (diagram == null) {
             diagram = new Diagram(this.stringPos, barre, minPos, maxPos);
         }

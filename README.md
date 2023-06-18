@@ -114,16 +114,36 @@ Okenní formulářová aplikace je implementována pomocí frameworku Windows Fo
 
 Program lze rovněž spustit v konzoli, stačí použít argument `console`. Po zadání jména akordu se vypíšou jeho diagramy (deset nejlepších) v sestupném pořadí podle skóre. Zadání názvu nástroje na daný nástroj přepne. Slovní spojení `run tests` spustí sadu testů a vypíše jejich výstup. Testy lze rovněž provést spuštěním programu s argumentem `tests`.
 
+Testy prověřují zejména [zpracování vstupu](#zpracování-vstupu) a generování hmatů pro několik základních akordů.
+
 ### Zpracování vstupu
 
-O zpracování vstupu všeho druhu se stará třída `Parser`. Ta rovněž při spuštění programu načítá konfiguraci.
+O zpracování vstupu všeho druhu se stará třída `Parser`. Ta rovněž při spuštění programu načítá konfiguraci. V případě chybného uživatelského vstupu (chybného jména akordu) je vyvolána `FormatException`. Ta je v okenní aplikaci zachycena a vypsána na obrazovku.
 
-### Konstanty
+### Konstanty a statické třídy
 
+Konstanty jsou rozděleny do tří statických tříd: `Program`, `Music` a `Strings`. Třída `Strings` obsahuje všechny texty, na které uživatel může narazit v grafickém prostředí okenní aplikace. V `Music` se nacházejí všechny hudební konstanty a také metoda `Modulo` zajišťující modulární aritmetiku půltónů. `Program` obsahuje ostatní konstanty, základní metody programu a pomocnou metodu pro sčítání prvků pole.
+
+### Objekty
+
+Pro každý akord zadaný uživatelem vzniká objekt `Chord`. Aktuálně vybraný nástroj je reprezentován ukazatelem na odpovídající objekt `Instrument`.
+
+Pomocí těchto dvou objektů se následně vytváří instance třídy `Positions`, která obsahuje seznam objektů `Position`, přičemž každý z nich odpovídá jenomu hmatu a počítá jeho skóre.
+
+Při prvním požadavku o vykreslení/vypsání diagramu daného hmatu je vytvořen objekt `Diagram`, který obsahuje polotovar diagramu hmatu a obsluhuje požadavky o jeho výpis či vykreslení, jež mu předává objekt `Position`.
+
+Objekt `ChordPlayer` je vytvořen při spuštění okenní aplikace a zajišťuje přehrávání akordů.
+
+### Průchod programem
+
+Při spuštění programu se načte konfigurační soubor. Jako výchozí hudební nástroj se použije ten, který je v konfiguračním souboru uveden jako první. Uživatel může hudební nástroj přepnout na jiný z nabídky. Jakmile zadá jméno akordu, vytvoří se pro tento akord objekt. Pomocí něj a zvoleného nástroje se pak vytvoří seznam všech možných hmatů s ohodnoceními. Tento seznam se následně seřadí podle skóre a první deset položek se vypíše na obrazovku.
 
 ## Závěr
 
-- eliminovat nechytnutelné hmaty
-- hledat barréčka kde nejsou
-- umožnit tlumené struny uprostřed
-- generovat ohodnocovací funkci automaticky (?)
+Ačkoliv program řeší zadání a funguje efektivně, bylo by možné provést drobné úpravy či rozšíření.
+
+Zrychlení výpočtu (i když nepatrného) by bylo jistě dosaženo přidáním další nutné podmínky – aby hmat sahal nejvýše přes 7 pražců.
+
+Jistou změnu ve výsledcích vyhodnocení by pravděpodobně přineslo umožnění částečných barré – tedy že by mohl libovolný prst držet libovolný počet strun najednou. Někdo by mohl jako omezující vnímat zákaz tlumených strun mezi dvěma netlumenými, ač tam bych přínos zrušení tohoto omezení vnímal jako diskutabilní.
+
+Posledním možným rozšířením je úprava či dokonce jakési automatické generování parametrů vyhodnocovací funkce, aby se tradiční hmaty umisťovaly ve výsledných žebříčcích na prvních (nebo alespoň vyšších) příčkách.
