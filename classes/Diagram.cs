@@ -31,13 +31,13 @@ class Diagram {
 
         for (int i = firstFret; i <= lastFret; i++) {
             if (barre == i) {
-                finger++;
-
                 for (int j = 0; j < stringPos.Length; j++) {
                     if (stringPos[j] == i) {
-                        frets[i - firstFret, j] = fingerShift + finger - 1;
+                        frets[i - firstFret, j] = finger;
                     }
                 }
+
+                finger++;
             } else {
                 int lastFinger = finger;
 
