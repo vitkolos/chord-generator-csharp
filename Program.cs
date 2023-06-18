@@ -1,4 +1,11 @@
-﻿class Program {
+﻿/*
+    Generátor hmatů akordů
+    Vít Kološ, 1. ročník, IPP
+    letní semestr 2022/2023
+    NPRG031 Programování 2
+*/
+
+class Program {
     public static bool RunInWindow = true;
     public static bool GraphicMode = true;
     public const string ConfigPath = "config.txt";
@@ -6,14 +13,23 @@
     public const int DiagramWidth = 100;
     public const int DiagramHeight = 120;
 
-    public static int SumTo(int[] array, int to) {
-        int sum = 0;
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool SetProcessDPIAware();
 
-        for (int i = 0; i < to; i++) {
-            sum += array[i];
+    [STAThread]
+    static void Main(string[] args) {
+        bool inWindow, runTests;
+        Program.ProcessArgs(args, out inWindow, out runTests);
+
+        if (runTests) {
+            Tests.Run();
+        } else if (inWindow) {
+            SetProcessDPIAware();
+            Application.EnableVisualStyles();
+            Application.Run(new WindowsForm());
+        } else {
+            ConsoleApp.Run(args);
         }
-
-        return sum;
     }
 
     public static void ProcessArgs(string[] args, out bool inWindow, out bool runTests) {
@@ -31,6 +47,16 @@
         if (Array.IndexOf(args, "text") != -1) {
             Program.GraphicMode = false;
         }
+    }
+
+    public static int SumTo(int[] array, int to) {
+        int sum = 0;
+
+        for (int i = 0; i < to; i++) {
+            sum += array[i];
+        }
+
+        return sum;
     }
 }
 

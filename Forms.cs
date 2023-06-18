@@ -1,25 +1,4 @@
-class Forms {
-    [STAThread]
-    static void Main(string[] args) {
-        bool inWindow, runTests;
-        Program.ProcessArgs(args, out inWindow, out runTests);
-
-        if (runTests) {
-            Tests.Run();
-        } else if (inWindow) {
-            SetProcessDPIAware();
-            Application.EnableVisualStyles();
-            Application.Run(new Form1());
-        } else {
-            ConsoleApp.Run(args);
-        }
-    }
-
-    [System.Runtime.InteropServices.DllImport("user32.dll")]
-    private static extern bool SetProcessDPIAware();
-}
-
-public partial class Form1 : Form {
+public partial class WindowsForm : Form {
     Instrument instrument;
     Parser parser;
     ChordPlayer player;
@@ -34,7 +13,7 @@ public partial class Form1 : Form {
     int diagramHorizontalPadding = 10;
     int diagramVerticalPadding = 8;
 
-    public Form1() {
+    public WindowsForm() {
         chordLabel = new Label();
         configLabel = new LinkLabel();
         chordInput = new TextBox();
@@ -146,17 +125,17 @@ public partial class Form1 : Form {
         Controls.Add(okButton);
         Controls.Add(outputArea);
         Text = Strings.Title;
-        Load += Form1_Load;
-        Resize += Form1_Resize;
+        Load += WindowsForm_Load;
+        Resize += WindowsForm_Resize;
 
         ResumeLayout(false);
     }
 
-    private void Form1_Load(object? sender, EventArgs e) {
+    private void WindowsForm_Load(object? sender, EventArgs e) {
         RefreshResponsiveLayout();
     }
 
-    private void Form1_Resize(object? sender, EventArgs e) {
+    private void WindowsForm_Resize(object? sender, EventArgs e) {
         RefreshResponsiveLayout();
     }
 
