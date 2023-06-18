@@ -228,7 +228,7 @@ public partial class WindowsForm : Form {
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (FormatException e) {
                 Label m = WriteMessage(e.Message);
                 m.ForeColor = Color.DarkRed;
             }

@@ -39,7 +39,7 @@ class Tests {
         Console.Write(info);
 
         if (a != b) {
-            throw new Exception(a.ToString() + " does not equal " + b.ToString());
+            throw new ArgumentException(a.ToString() + " does not equal " + b.ToString());
         }
 
         Console.WriteLine(" OK");
@@ -49,7 +49,7 @@ class Tests {
         Console.Write(info);
 
         if (a != b) {
-            throw new Exception(a + " does not equal " + b);
+            throw new ArgumentException(a + " does not equal " + b);
         }
 
         Console.WriteLine(" OK");
@@ -59,7 +59,7 @@ class Tests {
         Console.WriteLine(info);
 
         if (a.Length != b.Length) {
-            throw new Exception("one array is longer");
+            throw new ArgumentException("one array is longer");
         }
 
         for (int i = 0; i < a.Length; i++) {
@@ -73,7 +73,7 @@ class Tests {
         Console.Write(info);
 
         if (a is null) {
-            throw new Exception("is null");
+            throw new ArgumentException("is null");
         }
 
         Console.WriteLine(" is not null OK");

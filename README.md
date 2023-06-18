@@ -19,9 +19,17 @@ Tóny (základní i basové) jsou tvořeny jedním nebo dvěma znaky, kde první
 
 Příklady možných názvů akordů: `C/E`, `Ebmaj7`, `Fsus4`, `F#m`
 
+### Doplňkové funkce
+
+Je-li přítomná složka `audio` se zvukovými soubory (požadovaná vnitřní struktura složky a názvy souborů jsou specifikovány v kódu programu, konkrétně v souboru `classes/ChordPlayer.cs`) a spadají-li tóny akordu do podporovaného rozsahu, je možné konkrétní variantu akordu odpovídající danému hmatu přehrát kliknutím na jeho diagram.
+
+Konfigurační soubor lze otevřít přímo z okna programu stisknutím tlačítka „konfigurovat“.
+
 ## Konfigurace
 
-Program očekává existenci konfiguračního souboru `config.txt`. Ten se skládá ze dvou částí oddělených prázdným řádkem. První část odpovídá seznamu hudebních nástrojů, druhá seznamu typů akordů. Jeden řádek odpovídá jednomu nástroji nebo typu akordu. Každý řádek obsahuje dvě nebo tři hodnoty oddělené čárkou.
+Program očekává existenci konfiguračního souboru `config.txt`. Ten se načítá při startu programu, pokud tedy program běží a tento soubor je změněn, je nutné program spustit znova.
+
+Konfigurační soubor se skládá ze dvou částí oddělených prázdným řádkem. První část odpovídá seznamu hudebních nástrojů, druhá seznamu typů akordů. Jeden řádek odpovídá jednomu nástroji nebo typu akordu. Každý řádek obsahuje dvě nebo tři hodnoty oddělené čárkou.
 
 ### Konfigurace hudebního nástroje
 
@@ -35,7 +43,7 @@ Poslední hodnota odpovídá počtu dostupných pražců (nultý se nepočítá)
 
 První hodnota odpovídá seznamu možných označení akordu oddělených mezerou. Speciální roli hraje označení `major`, neboť pokud uživatel při používání programu nezadá typ akordu, automaticky se zvolí tento typ.
 
-Druhá hodnota obsahuje seznam tónů, z nichž se akord skládá, tóny jsou zde reprezentovány svými vzdálenostmi od tóniky. Každý tón tedy odpovídá číslu z rozsahu 1–11. Číslo 10 lze alternativně zapsat písmenem `t` nebo `A`, číslo 11 písmenem `e` nebo `B`. Je-li některý z tónů zapsán více než jedním znakem, je nutné tóny oddělit mezerami.
+Druhá hodnota obsahuje seznam tónů, z nichž se akord skládá, tóny jsou zde reprezentovány svými vzdálenostmi od tóniky. Každý tón tedy odpovídá číslu z rozsahu 0–11. Číslo 10 lze alternativně zapsat písmenem `t` nebo `A`, číslo 11 písmenem `e` nebo `B`. Je-li některý z tónů zapsán více než jedním znakem, je nutné tóny oddělit mezerami.
 
 ### Vzorová konfigurace
 
