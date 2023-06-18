@@ -41,7 +41,7 @@ class Parser {
             defaultInstrumentName = lineParts[0];
         }
 
-        if (lineParts.Length > 2) {
+        if (lineParts.Length > 2 && lineParts[2] != "") {
             frets = int.Parse(lineParts[2]);
         }
 
@@ -49,6 +49,10 @@ class Parser {
             string[] s = input.Split(' ');
             stringNames = new string[s.Length];
             octaves = new int[s.Length];
+
+            for (int i = 0; i < octaves.Length; i++) {
+                octaves[i] = Music.DefaultOctave;
+            }
 
             for (int i = 0; i < s.Length; i++) {
                 int firstNumericIndex = s[i].IndexOfAny("1234567890".ToCharArray());
@@ -89,9 +93,11 @@ class Parser {
         for (int i = 0; i < chordNotes.Length; i++) {
             switch (chordNotes[i]) {
                 case "t":
+                case "A":
                     notes[i] = 10;
                     break;
                 case "e":
+                case "B":
                     notes[i] = 11;
                     break;
                 default:

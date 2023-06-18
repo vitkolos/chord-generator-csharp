@@ -1,92 +1,53 @@
-# student
+# Generátor hmatů akordů
 
-Tady bude Váš zápočtový program
+| Vít Kološ, 1. ročník, IPP | letní semestr 2022/2023 | NPRG031 Programování 2 |
+| - | - | - |
 
-## Getting started
+## Anotace
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Program pro zadaný akord určí hmaty, kterými jej lze na kytaru či jiný strunný nástroj zahrát, a zobrazí jejich diagramy.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Použití programu
 
-## Add your files
+Za předpokladu, že je program správně konfigurován (viz sekce [Konfigurace](#konfigurace)), spočívá jeho použití v zadání [názvu akordu](#název-akordu) (např. D#maj7) a potvrzení vstupu tlačítkem Generovat nebo klávesou Enter. Následně se zobrazí několik způsobů, jak daný akord na zvolený nástroj zahrát. Tyto varianty jsou seřazeny podle několika kritérií, obvykle je vhodné použít jeden z prvních tří zobrazených hmatů. Pokud konfigurační soubor obsahuje více hudebních nástrojů, je možné vybrat, pro který z nich se hmaty mají generovat.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Název akordu
 
+Název akordu se může skládat ze tří částí: základního tónu, typu akordu a basového tónu za lomítkem. Všechny podporované typy akordů musí být uvedeny v dokumentaci. Není-li typ akordu zadán, je automaticky vyhodnocen jako `major` (tento typ akordu by tedy v konfiguraci neměl chybět). Basový tón se píše až za typ akordu a je zleva oddělen lomítkem.
+
+Tóny (základní i basové) jsou tvořeny jedním nebo dvěma znaky, kde první je velké písmeno a druhý je znak `#` nebo `b`. Písmena odpovídají českému (respektive německému) systému pojmenování not, tedy po notě A následují (po půltónech) B, H, C. (V anglosaském systému by to bylo A, Bb, B, C.) Funguje enharmonická záměna, tedy platí, že G# = Ab nebo že B = Hb = A#. S tónem B je nakládáno specificky, pokud za ním následuje posuvka (křížek nebo béčko), tak se tato již nevyhodnocuje (tedy Bb = B). Dvojité posuvky (Gbb) ani alternativní označení (Dis, Es) nejsou podporovány.
+
+Příklady možných názvů akordů: `C/E`, `Ebmaj7`, `Fsus4`, `F#m`
+
+## Konfigurace
+
+Program očekává existenci konfiguračního souboru `config.txt`. Ten se skládá ze dvou částí oddělených prázdným řádkem. První část odpovídá seznamu hudebních nástrojů, druhá seznamu typů akordů. Jeden řádek odpovídá jednomu nástroji nebo typu akordu. Každý řádek obsahuje dvě nebo tři hodnoty oddělené čárkou.
+
+### Konfigurace hudebního nástroje
+
+U hudebního nástroje určuje první hodnota jeho název (nesmí obsahovat čárku).
+
+Druhá určuje ladění strun, jde o seznam tónů odpovídajících jednotlivým strunám, pořadí v seznamu odpovídá pořadí na nástroji (zleva doprava). Pokud jsou všechny tóny v jedné oktávě (jednočárkované) a lze je zapsat bez posuvek, je možné je napsat bez mezer (např. `GCEA`). Jinak je nutné je oddělit mezerami, přičemž za název tónu se uvádí číslo oktávy (podle *vědecké* notace, kde jednočárkovaná oktáva má číslo 4, *komorní a* by se tedy zapsalo jako A4). Pokud číslo oktávy chybí, je použita výchozí (jednočárkovaná) oktáva.
+
+Poslední hodnota odpovídá počtu dostupných pražců (nultý se nepočítá), tato hodnota je volitelná (výchozí počet je 20) a obvykle nehraje příliš velkou roli, protože většina základních akordů se vejde na prvních několik pražců.
+
+### Konfigurace typu akordu
+
+První hodnota odpovídá seznamu možných označení akordu oddělených mezerou. Speciální roli hraje označení `major`, neboť pokud uživatel při používání programu nezadá typ akordu, automaticky se zvolí tento typ.
+
+Druhá hodnota obsahuje seznam tónů, z nichž se akord skládá, tóny jsou zde reprezentovány svými vzdálenostmi od tóniky. Každý tón tedy odpovídá číslu z rozsahu 1–11. Číslo 10 lze alternativně zapsat písmenem `t` nebo `A`, číslo 11 písmenem `e` nebo `B`. Je-li některý z tónů zapsán více než jedním znakem, je nutné tóny oddělit mezerami.
+
+### Vzorová konfigurace
+
+Tento vzor záměrně obsahuje několik variant značení, při praktickém použití je vhodné zvolit jednu z nich.
+
+```csv
+kytara,E2 A2 D3 G3 H3 E4
+ukulele,GCEA,19
+
+major,0 4 7
+m mi,0 3 7
+7,0 4 7 10
+m7,0 3 7 A
+maj maj7,047e
 ```
-cd existing_repo
-git remote add origin https://gitlab.mff.cuni.cz/teaching/nprg031/2023-summer/common/student.git
-git branch -M master
-git push -uf origin master
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.mff.cuni.cz/teaching/nprg031/2023-summer/common/student/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

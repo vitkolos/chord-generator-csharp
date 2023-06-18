@@ -19,7 +19,7 @@ class Chord {
             notes[i] = Music.Modulo(parsedChord[i] + root);
         }
 
-        if (inputParts.Length > 1) {
+        if (inputParts.Length > 1 && inputParts[1] != "") {
             _bass = parser.ParseNoteWithAccidental(inputParts[1], out _bass);
 
             if (Array.IndexOf(notes, bass) == -1) {
