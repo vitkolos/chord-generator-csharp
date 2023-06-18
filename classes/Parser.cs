@@ -49,13 +49,14 @@ class Parser {
             string[] s = input.Split(' ');
             stringNames = new string[s.Length];
             octaves = new int[s.Length];
+            char[] numericChars = "0123456789".ToCharArray();
 
             for (int i = 0; i < octaves.Length; i++) {
                 octaves[i] = Music.DefaultOctave;
             }
 
             for (int i = 0; i < s.Length; i++) {
-                int firstNumericIndex = s[i].IndexOfAny("1234567890".ToCharArray());
+                int firstNumericIndex = s[i].IndexOfAny(numericChars);
 
                 if (firstNumericIndex == -1) {
                     stringNames[i] = s[i];

@@ -34,7 +34,7 @@ class ConsoleApp {
                 if (--i <= Program.NumberOfDiagrams) {
                     Console.WriteLine();
                     Console.WriteLine(i + ". " + position.GetText() + " " + position.score);
-                    Console.Write(position.GetDiagram());
+                    Console.Write(position.GetDiagramString());
                     Console.WriteLine();
                 }
             }

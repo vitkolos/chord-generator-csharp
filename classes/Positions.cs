@@ -71,7 +71,7 @@ class Position {
     int maxPos = 0;
     Instrument instrument;
     Chord chord;
-    Diagram diagram;
+    Diagram? diagram;
     int[] stringPos;
 
     public Position(Instrument instrument, Chord chord, int[] stringPos, int barre) {
@@ -81,7 +81,6 @@ class Position {
         this.stringPos = new int[instrument.strings.Length];
         stringPos.CopyTo(this.stringPos, 0);
         this._score = this.getScore();
-        diagram = new Diagram(this.stringPos, barre, minPos, maxPos);
     }
 
     public void Play(ChordPlayer player, Instrument instrument) {
@@ -92,12 +91,20 @@ class Position {
         return barre.ToString() + " " + string.Join(',', stringPos);
     }
 
-    public string GetDiagram() {
-        return diagram.GetString();
+    public Diagram GetDiagram() {
+        if (diagram == null) {
+            diagram = new Diagram(this.stringPos, barre, minPos, maxPos);
+        }
+
+        return diagram;
+    }
+
+    public string GetDiagramString() {
+        return GetDiagram().GetString();
     }
 
     public void DrawDiagram(Graphics g) {
-        diagram.Draw(g);
+        GetDiagram().Draw(g);
     }
 
     int getScore() {

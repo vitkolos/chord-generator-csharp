@@ -218,7 +218,7 @@ public partial class WindowsForm : Form {
                         } else {
                             var diagram = new Label();
                             diagram.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point);
-                            diagram.Text = i.ToString() + ". \n" + position.GetDiagram();
+                            diagram.Text = i.ToString() + ". \n" + position.GetDiagramString();
                             diagram.AutoSize = true;
                             diagram.Margin = new Padding(diagramHorizontalPadding, diagramVerticalPadding, 0, diagramVerticalPadding);
                             diagram.Tag = position;
