@@ -35,7 +35,7 @@ Konfigurační soubor se skládá ze dvou částí oddělených prázdným řád
 
 U hudebního nástroje určuje první hodnota jeho název (nesmí obsahovat čárku).
 
-Druhá určuje ladění strun, jde o seznam tónů odpovídajících jednotlivým strunám, pořadí v seznamu odpovídá pořadí na nástroji (zleva doprava). Pokud jsou všechny tóny v jedné oktávě (jednočárkované) a lze je zapsat bez posuvek, je možné je napsat bez mezer (např. `GCEA`). Jinak je nutné je oddělit mezerami, přičemž za název tónu se uvádí číslo oktávy (podle *vědecké* notace, kde jednočárkovaná oktáva má číslo 4, *komorní a* by se tedy zapsalo jako A4). Pokud číslo oktávy chybí, je použita výchozí (jednočárkovaná) oktáva.
+Druhá určuje ladění strun, jde o seznam tónů odpovídajících jednotlivým strunám, pořadí v seznamu odpovídá pořadí na nástroji (zleva doprava). Pokud jsou všechny tóny v jedné oktávě (jednočárkované) a lze je zapsat bez posuvek, je možné je napsat bez mezer (např. `GCEA`). Jinak je nutné je oddělit mezerami, přičemž za název tónu se uvádí číslo oktávy (podle *vědecké* notace, kde jednočárkovaná oktáva má číslo 4, *komorní a* by se tedy zapsalo jako A4). Pokud číslo oktávy chybí, je použita výchozí (jednočárkovaná) oktáva. Specifika zápisu tónu jsou uvedeny v sekci [Název akordu](#název-akordu).
 
 Poslední hodnota odpovídá počtu dostupných pražců (nultý se nepočítá), tato hodnota je volitelná (výchozí počet je 20) a obvykle nehraje příliš velkou roli, protože většina základních akordů se vejde na prvních několik pražců.
 
@@ -59,3 +59,52 @@ m mi,0 3 7
 m7,0 3 7 A
 maj maj7,047e
 ```
+
+## Slovníček pojmů
+
+- akord – souzvuk tónů
+- hmat – způsob, jak stisknout struny na strunném hudebním nástroji, aby zněly požadované tóny (respektive kýžený akord)
+- diagram (hmatu) – schematické znázornění hmatu (umístění jednotlivých prstů na strunách)
+- tónika – základní tón stupnice či tóniny (případně akordu)
+- barré – způsob držení hmatu, kdy ukazováček drží několik strun najednou (pro účely mého programu všechny struny)
+- hmatník – část nástroje, nad níž jsou nataženy struny
+- pražec – kovový pásek vsazený do hmatníku, nad nímž je nutné stisknout strunu, aby zněl určitý tón (k-tý pražec tón struny obvykle zvyšuje o k půltónů; nultý pražec se pochopitelně nemačká)
+- otevřená struna – struna, která v daném hmatu není stisklá a zní
+- tlumená struna – struna, která v daném hmatu není stiklá a nezní (nebo ji hráč prsty tlumí, aby nezněla)
+
+## Řešený problém a algoritmus
+
+Za zajímavé části programu považuji generování všech možných hmatů pro určitý akord, seřazení těchto variant podle vhodně zvolených kritérií, očíslování jednotlivých prstů v daném hmatu a vykreslení diagramu. Z toho první dvě řeší ústřední problém, kterým se můj zápočtový program zabýval, totiž **jak nalézt vhodný hmat**, kterým lze akord zahrát (ideálně ten, který muzikanti obvykle používají), bez pomoci internetu či příruček.
+
+### Vhodný hmat
+
+Ale jak poznat vhodný hmat? Nu, to je ten, který se dobře hraje a dobře zní. Je jisté, že hmat, k jehož stisknutí je potřeba 6 prstů, se moc dobře hrát nebude. Hmat akordu D sice zní dobře, ale pokud by ho program vrátil jako hmat akordu C, nebyl bych spokojen. Určil jsem tyto nutné podmínky, aby se hmat dal považovat za platný:
+
+1. musí obsahovat všechny tóny akordu a žádné jiné,
+2. k jeho stisknutí jsou použity nejvýše čtyři prsty,
+3. prsty se vejdou na hmatník (hmat nepoužívá neexistující pražce),
+4. je-li v akordu použito barré, je aktivně využíváno,
+5. tlumené struny nejsou z obou stran obklopeny netlumenými.
+
+Splnění těchto podmínek je realizováno rekurzivním voláním funkce, která postupně vygeneruje všechny možné akordy. O zadaném akordu je známo, z jakých tónů se musí skládat (kombinací základního tónu a typu akordu, případně i basového tónu), funkce tedy na každé struně zkouší postupně stisknout každý z tónů nebo strunu tlumit. Zároveň si eviduje, kolik tónů je již ve vygenerovaném souzvuku zastoupeno. Pokud výsledný hmat splňuje nutná kritéria, je přidán do seznamu všech možných hmatů.
+
+Pro ukulele (čtyřstrunný nástroj s 19 pražci) teoreticky existuje 160 000 hmatů. Po aplikaci uvedených kritérií pro určitý akord jich zbyde přibližně 700. Ty je potřeba nějak seřadit a určit, které jsou nejvýhodnější.
+
+Řazení řeší ohodnocovací funkce, která každému hmatu přiděluje skóre. To ovlivňují následující kritéria: barré, základní tón (zda je nejnižším tónem souzvuku), výška nejnižšího tónu, výškové rozpětí tónů v souzvuku, vzájemná vzdálenost prstů na hmatníku, počet použitých prstů, přítomnost tlumených strun. Je tam rovněž přítomno několik kritérií, které mají tak výraznou váhu, že akord obvykle odsunou z první desítky: téměř nevyužívané barré, basový tón není nejnižším tónem, příliš mnoho tlumených strun, tlumené struny na obou stranách hmatníku.
+
+Ohodnocovací funkci jsem vytvářel ručně, snažil jsem se, aby tradiční hmaty všech základních akordů byly na prvním místě nebo alespoň v první trojici. Sice stále nevrací dokonalé výsledky, ale někdy se ukazuje, že „správný“ výsledek ani vrátit nemůže, jako v případě kytarového akordu C7, jehož tradiční hmat neobsahuje tón g.
+
+#### Jinak a hůře
+
+Jedním z možných jiných řešení je algoritmus, který by na každé struně zvolil první (nejnižší) tón, který je v daném akordu obsažen. Pro dostatečně jednoduchý nástroj, jakým je ukulele, a pár základních akordů tento postup skutečně vrací správné výsledky. U jiných akordů však tímto způsobem mineme velmi výhodné hmaty a snahy o odvrácení tohoto jevu vedou k řešení velmi podobnému tomu mému.
+
+### Prsty a diagramy
+
+
+
+## Závěr
+
+- eliminovat nechytnutelné hmaty
+- hledat barréčka kde nejsou
+- umožnit tlumené struny uprostřed
+- generovat ohodnocovací funkci automaticky (?)
