@@ -156,7 +156,7 @@ class Parser {
         }
     }
 
-    public int[] ParseChord(string input) {
+    public int[] ParseChordSuffix(string input) {
         if (input == "") {
             input = "major";
         }

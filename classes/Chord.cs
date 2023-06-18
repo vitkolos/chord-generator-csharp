@@ -12,7 +12,7 @@ class Chord {
         int accidental;
         _root = parser.ParseNoteWithAccidental(inputParts[0], out accidental);
         string variant = inputParts[0].Substring(accidental == 0 ? 1 : 2);
-        int[] parsedChord = parser.ParseChord(variant);
+        int[] parsedChord = parser.ParseChordSuffix(variant);
         notes = new int[parsedChord.Length];
 
         for (int i = 0; i < notes.Length; i++) {

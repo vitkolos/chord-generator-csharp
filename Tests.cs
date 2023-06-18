@@ -5,7 +5,7 @@ class Tests {
         ShouldEqual(parser.ParseNote('C'), 0, "C note");
 
         int[] major = { 0, 4, 7 };
-        ShouldEqual(parser.ParseChord(""), major, "major chord");
+        ShouldEqual(parser.ParseChordSuffix(""), major, "major chord");
 
         var chord = new Chord("D7", parser);
         int[] d7 = { 2, 6, 9, 0 };
