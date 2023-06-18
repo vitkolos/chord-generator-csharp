@@ -15,6 +15,23 @@
 
         return sum;
     }
+
+    public static void ProcessArgs(string[] args, out bool inWindow, out bool runTests) {
+        inWindow = Program.RunInWindow;
+        runTests = false;
+
+        if (Array.IndexOf(args, "tests") != -1) {
+            runTests = true;
+        } else if (Array.IndexOf(args, "console") != -1) {
+            inWindow = false;
+        } else if (Array.IndexOf(args, "window") != -1) {
+            inWindow = true;
+        }
+
+        if (Array.IndexOf(args, "text") != -1) {
+            Program.GraphicMode = false;
+        }
+    }
 }
 
 class Music {

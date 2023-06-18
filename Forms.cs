@@ -1,7 +1,12 @@
 class Forms {
     [STAThread]
     static void Main(string[] args) {
-        if (Program.RunInWindow) {
+        bool inWindow, runTests;
+        Program.ProcessArgs(args, out inWindow, out runTests);
+
+        if (runTests) {
+            Tests.Run();
+        } else if (inWindow) {
             SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.Run(new Form1());
