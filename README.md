@@ -146,4 +146,6 @@ Zrychlení výpočtu (i když nepatrného) by bylo jistě dosaženo přidáním 
 
 Jistou změnu ve výsledcích vyhodnocení by pravděpodobně přineslo umožnění částečných barré – tedy že by mohl libovolný prst držet libovolný počet strun najednou. Někdo by mohl jako omezující vnímat zákaz tlumených strun mezi dvěma netlumenými, ač tam bych přínos zrušení tohoto omezení vnímal jako diskutabilní.
 
-Posledním možným rozšířením je úprava či dokonce jakési automatické generování parametrů vyhodnocovací funkce, aby se tradiční hmaty umisťovaly ve výsledných žebříčcích na prvních (nebo alespoň vyšších) příčkách.
+Dalším možným rozšířením je úprava či dokonce jakési automatické generování parametrů vyhodnocovací funkce, aby se tradiční hmaty umisťovaly ve výsledných žebříčcích na prvních (nebo alespoň vyšších) příčkách.
+
+Kromě generování akordů a jejich vyhodnocování by také bylo možné rozšířit funkce aplikace například o vypsání konkrétních tónů, které u daného hmatu na strunách zní, nebo hromadný režim, který by umožňoval zobrazit hmaty pro více různých akordů.
