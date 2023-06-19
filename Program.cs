@@ -7,7 +7,7 @@
 
 static class Program {
     public const bool RunInWindow = true;
-    public static bool GraphicMode = true;
+    public const bool GraphicMode = true;
     public const string ConfigPath = "config.txt";
     public const int NumberOfDiagrams = 10;
     public const int DiagramWidth = 100;
@@ -18,22 +18,23 @@ static class Program {
 
     [STAThread]
     static void Main(string[] args) {
-        bool inWindow, runTests;
-        Program.ProcessArgs(args, out inWindow, out runTests);
+        bool inWindow, runTests, graphicMode;
+        Program.ProcessArgs(args, out inWindow, out runTests, out graphicMode);
 
         if (runTests) {
             Tests.Run();
         } else if (inWindow) {
             SetProcessDPIAware();
             Application.EnableVisualStyles();
-            Application.Run(new WindowsForm());
+            Application.Run(new WindowsForm(graphicMode));
         } else {
             ConsoleApp.Run(args);
         }
     }
 
-    public static void ProcessArgs(string[] args, out bool inWindow, out bool runTests) {
+    public static void ProcessArgs(string[] args, out bool inWindow, out bool runTests, out bool graphicMode) {
         inWindow = Program.RunInWindow;
+        graphicMode = Program.GraphicMode;
         runTests = false;
 
         if (Array.IndexOf(args, "tests") != -1) {
@@ -45,7 +46,7 @@ static class Program {
         }
 
         if (Array.IndexOf(args, "text") != -1) {
-            Program.GraphicMode = false;
+            graphicMode = false;
         }
     }
 

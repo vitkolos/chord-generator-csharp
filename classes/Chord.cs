@@ -8,7 +8,8 @@ class Chord {
 
     public Chord(string input, Parser parser) {
         this.parser = parser;
-        string[] inputParts = input.Split('/');
+        string trimmedInput = input.Trim();
+        string[] inputParts = trimmedInput.Split('/');
         int accidental;
         _root = parser.ParseNoteWithAccidental(inputParts[0], out accidental);
         string variant = inputParts[0].Substring(accidental == 0 ? 1 : 2);

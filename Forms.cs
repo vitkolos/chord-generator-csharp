@@ -12,8 +12,10 @@ public partial class WindowsForm : Form {
     int sharedLeftPadding;
     int diagramHorizontalPadding = 10;
     int diagramVerticalPadding = 8;
+    bool graphicMode;
 
-    public WindowsForm() {
+    public WindowsForm(bool graphicMode = Program.GraphicMode) {
+        this.graphicMode = graphicMode;
         chordLabel = new Label();
         configLabel = new LinkLabel();
         chordInput = new TextBox();
@@ -206,7 +208,7 @@ public partial class WindowsForm : Form {
 
                 foreach (var position in positions.list) {
                     if (++i <= Program.NumberOfDiagrams) {
-                        if (Program.GraphicMode) {
+                        if (graphicMode) {
                             PictureBox imageDiagram = new PictureBox();
                             imageDiagram.Tag = position;
                             imageDiagram.Size = new Size(Program.DiagramWidth, Program.DiagramHeight);
