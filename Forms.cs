@@ -83,7 +83,7 @@ public partial class WindowsForm : Form {
         chordInput.TabIndex = 0;
         chordInput.KeyDown += chordInput_KeyDown;
 
-        okButton.Location = new Point(leftPadding + inputBoxWidth + horizontalPadding, Program.SumTo(verticalSpace, 3));
+        okButton.Location = new Point(leftPadding + inputBoxWidth + horizontalPadding, Program.SumTo(verticalSpace, 3) - 1);
         okButton.Size = new Size(buttonWidth, verticalSpace[3]);
         okButton.TabIndex = 1;
         okButton.Text = Strings.OkButton;
