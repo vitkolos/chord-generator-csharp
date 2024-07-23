@@ -72,6 +72,8 @@ maj maj7,047e
 - otevřená struna – struna, která v daném hmatu není stisklá a zní
 - tlumená struna – struna, která v daném hmatu není stiklá a nezní (nebo ji hráč prsty tlumí, aby nezněla)
 
+*Některé definice vycházejí z vysvětlení pojmů na [české Wikipedii](https://cs.wikipedia.org).*
+
 ## Řešený problém a algoritmus
 
 Za zajímavé části programu považuji generování všech možných hmatů pro určitý akord, seřazení těchto variant podle vhodně zvolených kritérií, očíslování jednotlivých prstů v daném hmatu a vykreslení diagramu. Z toho první dvě řeší ústřední problém, kterým se můj zápočtový program zabýval, totiž **jak nalézt vhodný hmat**, kterým lze akord zahrát (ideálně ten, který muzikanti obvykle používají), bez pomoci internetu či příruček.
